@@ -25,7 +25,7 @@ rsuite_contrib_url <- function(repos, type, rver = NA) {
   get_os_version <- function(rel_file) {
     rel_str <- readLines(rel_file)[[1]]
     toks <- unlist(strsplit(rel_str, " "))
-    ver <- toks[grep("^\\d+[.]\\d+([.]\\d+)?$", toks)][1]
+    ver <- toks[grep("^(\\d+\\.)?(\\d+\\.)?(\\*|\\d+)$", toks)][1]
     ver <- gsub("^(\\d+[.]\\d+)([.]\\d+)?$", "\\1", ver)
     return(ver)
   }
@@ -83,7 +83,8 @@ rsuite_write_PACKAGES <- function(url, type) {
 
   if (type %in% c("win.binary", "source", "mac.binary")) {
     nr <- tools::write_PACKAGES(url, type = type, latestOnly = FALSE, addFiles = TRUE)
-  } else if (grepl("^mac[.]binary[.]", type)) { # mac.binary.el-capitan is not accepted by write_PACKAGES
+  } else if (grepl("^mac[.]binary[.]", type)) {
+    # mac.binary.el-capitan is not accepted by write_PACKAGES
     nr <- tools::write_PACKAGES(url, type = "mac.binary", latestOnly = FALSE, addFiles = TRUE)
   } else {
     nr <- tools::write_PACKAGES(url, latestOnly = FALSE, addFiles = TRUE)

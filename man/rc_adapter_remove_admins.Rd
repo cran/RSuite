@@ -9,7 +9,7 @@ rc_adapter_remove_admins(rc_adapter, dir)
 \arguments{
 \item{rc_adapter}{rc adapter object}
 
-\item{dir}{path to directory to remove administrators from. Folder must
+\item{dir}{path to the directory to remove administrators from. The folder must
 exist (type: character)}
 }
 \description{

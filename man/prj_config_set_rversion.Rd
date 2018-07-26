@@ -9,16 +9,17 @@ prj_config_set_rversion(rver, prj = NULL, validate = TRUE)
 \arguments{
 \item{rver}{R version to be used by the project. (type: character)}
 
-\item{prj}{project object to update configuration for. If not passed will use loaded
-project or default whichever exists. Will init default project from working
-directory if no default project exists. (type: rsuite_project, default: NULL)}
+\item{prj}{project object to update configuration for. If not passed the loaded
+project will used or the default whichever exists. Will init default project
+from the working directory if no default project exists.
+(type: rsuite_project, default: NULL)}
 
 \item{validate}{If TRUE will check if R version is valid for the platform.
 (type: logical, default: TRUE)}
 }
 \description{
 Project configuration (together with R version to be used) is stored in
-PARAMETERS file in project folder.
+PARAMETERS file in the project folder.
 }
 \examples{
 # create exemplary project base folder

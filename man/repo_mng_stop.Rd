@@ -2,7 +2,7 @@
 % Please edit documentation in R/04_api_repo.R
 \name{repo_mng_stop}
 \alias{repo_mng_stop}
-\title{Stops management over repository.}
+\title{Stops management over the repository.}
 \usage{
 repo_mng_stop(repo_manager)
 }
@@ -11,7 +11,7 @@ repo_mng_stop(repo_manager)
 (type: rsuite_repo_manager)}
 }
 \description{
-Stops management over repository.
+Stops management over the repository.
 }
 \examples{
 # create exemplary project base folder

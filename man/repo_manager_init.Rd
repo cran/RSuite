@@ -14,7 +14,7 @@ If missing all project supported package types will be initialized (type: charac
 }
 \value{
 TRUE if initialized repository for at least one type, FALSE if
-  structure was fully initialized already. (type:logical, invisible)
+  the structure was fully initialized already. (type:logical, invisible)
 }
 \description{
 Initializes managed repository structure.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/02_api_prj.R
 \name{prj_init}
 \alias{prj_init}
-\title{Loads project settings without loading it into environment.}
+\title{Loads project settings without loading them into the environment.}
 \usage{
 prj_init(path = getwd())
 }
@@ -15,15 +15,15 @@ performed upwards folder structure. Should be existing directory.
 object of type rsuite_project
 }
 \description{
-Loads project settings without loading it into environment.
+Loads project settings without loading them into the environment.
 }
 \details{
-Project parameters are searched and loaded. If project has been loaded
+Project parameters are searched and loaded. If the project has been loaded
 previously from the path the same project instance will be used without
 reloading.
 
-It project is the first one loaded it will became default project (used then
-NULL is passed as project for project management functions).
+If the project is the first one loaded it will become the default project (used then
+NULL is passed as the project for project management functions).
 }
 \examples{
 # create exemplary project base folder

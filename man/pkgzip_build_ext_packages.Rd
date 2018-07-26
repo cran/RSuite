@@ -33,7 +33,7 @@ created pkgzip file path (invisible).
 Builds PKGZIP out of passed external packages.
 }
 \details{
-It uses project to detect repositories to look for packages in.
+It uses the project to detect repositories to look for packages in.
 
 Logs all messages onto rsuite logger. Use  \code{logging::setLevel} to control logs
 verbosity.

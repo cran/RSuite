@@ -92,7 +92,7 @@ collect_prj_support_pkgs <- function(params, vanilla = FALSE) {
                                   unspec_roclets <- roclets[!grepl("^[a-zA-Z]+::", roclets)]
                                   assert(length(unspec_roclets) == 0,
                                          "Some extra roclets in %s are underspecified: %s",
-                                          pkg_dir, paste(unspec_roclets, collapse = ", "))
+                                         pkg_dir, paste(unspec_roclets, collapse = ", "))
 
                                   roc_pkgs <- gsub("^([a-zA-Z]+)::.+$", "\\1", roclets)
                                   sup_pkgs <- c(sup_pkgs, roc_pkgs)
@@ -142,6 +142,7 @@ collect_prj_support_pkgs <- function(params, vanilla = FALSE) {
                                                 fields = "Suggests")
              vers.from_deps(sugs, prj_packages[[pkg_dir]])
            }))
+
   suggest_vers <- vers.rm(suggest_vers,
                           setdiff(vers.get_names(suggest_vers), vers.get_names(support_vers)))
 
@@ -269,8 +270,9 @@ collect_dir_script_deps <- function(dir, recursive = TRUE) {
 #' @keywords internal
 #' @noRd
 #'
-collect_all_subseq_deps <- function(vers, repo_info, type, all_pkgs = NULL) {
+collect_all_subseq_deps <- function(vers, repo_info, type, all_pkgs = NULL, extra_reqs = NULL) {
   stopifnot(is.versions(vers))
+  stopifnot(is.null(extra_reqs) || is.versions(extra_reqs))
 
   if (is.null(all_pkgs)) {
     stopifnot(!missing(repo_info))
@@ -285,7 +287,7 @@ collect_all_subseq_deps <- function(vers, repo_info, type, all_pkgs = NULL) {
   }
 
   vers <- vers.rm_base(vers)
-  vers_cr <- vers.check_against(vers, avail_vers)
+  vers_cr <- vers.check_against(vers, avail_vers, extra_reqs)
 
   next_cr <- vers_cr
   while (check_res.has_found(next_cr)) {
@@ -294,7 +296,7 @@ collect_all_subseq_deps <- function(vers, repo_info, type, all_pkgs = NULL) {
     dep_vers <- vers.from_deps_in_avails(dep_avails)
     dep_vers <- vers.rm_base(dep_vers)
 
-    next_cr <- vers.check_against(dep_vers, avail_vers)
+    next_cr <- vers.check_against(dep_vers, avail_vers, extra_reqs)
     vers_cr <- check_res.union(vers_cr, next_cr)
   }
 
@@ -316,9 +318,9 @@ get_lock_env_vers <- function(params) {
   env_lock <- read.dcf(params$lock_path)
   env_lock_vers <- do.call("vers.union",
                            apply(X = env_lock, 1,
-                                  FUN = function(pkg){
-                                    vers.build(pkg["Package"], pkg["Version"], pkg["Version"])
-                                  })) # from 60_versions.R
+                                 FUN = function(pkg){
+                                   vers.build(pkg["Package"], pkg["Version"], pkg["Version"])
+                                 })) # from 60_versions.R
   return(env_lock_vers)
 }
 
@@ -365,7 +367,7 @@ lock_prj_deps <- function(avail_vers, params, relock = FALSE) {
   is_relocking_needed <- FALSE
 
   # look for new dependencies
-  new_deps <- avail_pkgs[!avail_pkgs %in% env_lock_pkgs]
+  new_deps <- setdiff(avail_pkgs, env_lock_pkgs)
   if (length(new_deps) != 0) {
     pkg_loginfo("Following packages will be added to lock requirements: %s",
                 paste(new_deps, collapse = ","))
@@ -373,7 +375,7 @@ lock_prj_deps <- function(avail_vers, params, relock = FALSE) {
   }
 
   # look for deleted dependencies
-  deleted_deps <- env_lock_pkgs[!env_lock_pkgs %in% avail_pkgs]
+  deleted_deps <- setdiff(env_lock_pkgs, avail_pkgs)
   if (length(deleted_deps) != 0) {
     assert(any(relock),
            paste0("Following packages to be removed from lock requirements: %s.",
@@ -386,8 +388,10 @@ lock_prj_deps <- function(avail_vers, params, relock = FALSE) {
     is_relocking_needed <- TRUE
   }
 
+  avail_vers_candidate <- vers.add_avails(avail_vers_locked, avail_vers$get_avails())
+
   # look for updated dependencies
-  unfeasibles <- vers.get_unfeasibles(avail_vers_locked)
+  unfeasibles <- vers.get_unfeasibles(avail_vers_candidate)
   if (length(unfeasibles) != 0) {
     assert(any(relock),
            paste0("Locked environment requirements cannot be satisfied for: %s.",
@@ -398,8 +402,8 @@ lock_prj_deps <- function(avail_vers, params, relock = FALSE) {
                 paste(unfeasibles, collapse = ","))
     is_relocking_needed <- TRUE
   } else {
-    # assign locked package requirements
-    avail_vers <- vers.add_avails(avail_vers_locked, avail_vers$get_avails())
+    # candidate is good
+    avail_vers <- avail_vers_candidate
   }
 
   if (is_relocking_needed) {

@@ -2,7 +2,7 @@
 % Please edit documentation in R/04_api_repo.R
 \name{repo_upload_pkgzip}
 \alias{repo_upload_pkgzip}
-\title{Uploads PKGZIP into managed repository.}
+\title{Uploads PKGZIP into the managed repository.}
 \usage{
 repo_upload_pkgzip(repo_manager, pkgzip)
 }
@@ -12,10 +12,10 @@ repo_upload_pkgzip(repo_manager, pkgzip)
 \item{pkgzip}{PKGZIP path to upload. It must exist. (type: character(1))}
 }
 \description{
-Uploads PKGZIP into managed repository.
+Uploads PKGZIP into the managed repository.
 }
 \details{
-Logs all messages onto rsuite logger. Use \code{logging::setLevel} to
+Logs all messages onto the rsuite logger. Use \code{logging::setLevel} to
 control logs verbosity.
 }
 \examples{

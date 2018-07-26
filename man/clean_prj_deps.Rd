@@ -2,7 +2,7 @@
 % Please edit documentation in R/11_install_prj_deps.R
 \name{clean_prj_deps}
 \alias{clean_prj_deps}
-\title{Cleans installed packages that are not required from project local environment.}
+\title{Cleans installed packages that are not required from the local project environment.}
 \usage{
 clean_prj_deps(params)
 }
@@ -10,6 +10,6 @@ clean_prj_deps(params)
 \item{params}{project parameters(type: rsuite_project_params)}
 }
 \description{
-Cleans installed packages that are not required from project local environment.
+Cleans installed packages that are not required from the local project environment.
 }
 \keyword{internal}

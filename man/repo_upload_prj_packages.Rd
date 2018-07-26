@@ -2,7 +2,7 @@
 % Please edit documentation in R/04_api_repo.R
 \name{repo_upload_prj_packages}
 \alias{repo_upload_prj_packages}
-\title{Builds and uploads project package(s) into repository.}
+\title{Builds and uploads project package(s) into the repository.}
 \usage{
 repo_upload_prj_packages(repo_manager, pkgs = NULL, prj = NULL,
   skip_rc = FALSE, pkg_type = .Platform$pkgType, with_deps = FALSE,
@@ -11,10 +11,10 @@ repo_upload_prj_packages(repo_manager, pkgs = NULL, prj = NULL,
 \arguments{
 \item{repo_manager}{repo manager to use for uploading. (type: rsuite_repo_manager)}
 
-\item{pkgs}{vector of project packages which should be uploaded into repository
+\item{pkgs}{vector of project packages which should be uploaded into the repository
 or NULL to upload all project packages (type: character, default: NULL)}
 
-\item{prj}{project object to use.If not passed will init project from
+\item{prj}{project object to use. If not passed will init project from
 working directory. (type: rsuite_project, default: NULL)}
 
 \item{skip_rc}{if TRUE skip detection of package revision and package tagging.
@@ -22,7 +22,7 @@ working directory. (type: rsuite_project, default: NULL)}
 
 \item{pkg_type}{type of packages to upload (type: character, default: platform default)}
 
-\item{with_deps}{If TRUE will include pkgs dependencies while uploading into
+\item{with_deps}{If TRUE will include pkgs dependencies while uploading into the
 repository. Packages in repository satisfying pkgs requirements will not be
 included. (type: logical, default: FALSE)}
 
@@ -33,21 +33,21 @@ included. (type: logical, default: FALSE)}
   \item{docs}{Try build documentation with roxygen}
   \item{imps}{Perform imports validation}
   \item{tests}{Run package tests}
-  \item{rcpp_attribs}{Run rppAttribs on package}
+  \item{rcpp_attribs}{Run rppAttribs on the package}
   \item{vignettes}{Build package vignettes}
 }
 (type: character(N), default: NULL).}
 }
 \description{
-Builds and uploads project package(s) into repository.
+Builds and uploads project package(s) into the repository.
 }
 \details{
 If not specified to skip RC it will detect revision version and tag packages
-before uploading. In that case check for changes in project sources is
+before uploading. In that case, a check for changes in the project sources is
 performed for consistency and project packages will be rebuilt with version
-altered: revision will be added as least number to package version.
+altered: revision will be added as the least number to package version.
 
-Logs all messages onto rsuite logger. Use \code{logging::setLevel} to
+Logs all messages onto the rsuite logger. Use \code{logging::setLevel} to
 control logs verbosity.
 }
 \examples{

@@ -7,9 +7,9 @@
 sysreqs_install(prj = NULL)
 }
 \arguments{
-\item{prj}{project object to handle sys requirements for. If not passed will
-use loaded project or default whichever exists. Will init default project
-from working directory if no default project exists.
+\item{prj}{project object to handle sys requirements for. If not passed the
+loaded project will be used  or the default whichever exists. Will init
+default project from the working directory if no default project exists.
 (type: rsuite_project, default: NULL)}
 }
 \description{

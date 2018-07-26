@@ -2,18 +2,18 @@
 % Please edit documentation in R/02_api_prj.R
 \name{prj_start_package}
 \alias{prj_start_package}
-\title{Creates package structure inside project.}
+\title{Creates package structure inside the project.}
 \usage{
 prj_start_package(name, prj = NULL, skip_rc = FALSE, tmpl = "builtin")
 }
 \arguments{
-\item{name}{name of package to create. It must not contain special characters
+\item{name}{name of the package to create. It must not contain special characters
 like \\/\"\'<> otherwise package folder could not be created. It must not
-contain _ also as it is requirement enforced on R package names. Folder
+contain _ also as it is requirement enforced on R package names. The folder
 must not exist.
 (type: character).}
 
-\item{prj}{project object to create package in. If not passed will init
+\item{prj}{project object to create the package in. If not passed will init
 project from working directory. (type: rsuite_project, default: NULL)}
 
 \item{skip_rc}{if TRUE skip adding package under revision control.
@@ -24,13 +24,13 @@ structure  creation.
 (type: character).}
 }
 \description{
-Creates package structure inside project.
+Creates package structure inside the project.
 }
 \details{
-It fails if package exists already in the project.
+It fails if the package exists already in the project.
 
-Logs all messages from build onto rsuite logger. Use \code{logging::setLevel}
-to control logs verbosity. DEBUG level turns on build and download messages.
+Logs all messages from the building process onto the rsuite logger. Use \code{logging::setLevel}
+to control logs verbosity. DEBUG level turns on building and downloading messages.
 
 Package templates have to include the following files: DESCRIPTION, NAMESPACE, NEWS
 }

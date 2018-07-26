@@ -2,19 +2,19 @@
 % Please edit documentation in R/30_rc_adapter.R
 \name{rc_adapter_create_base}
 \alias{rc_adapter_create_base}
-\title{Creates base presentation for RC adapter to use by concrete implementations.}
+\title{Creates the base presentation for the RC adapter to use by concrete implementations.}
 \usage{
 rc_adapter_create_base(name)
 }
 \arguments{
-\item{name}{name under which RC adapter will registered in RSuite. It
+\item{name}{name under which RC adapter will be registered in RSuite. It
 cannot contain whitespaces or comma. (type: character)}
 }
 \value{
 object of type rsuite_rc_adapter
 }
 \description{
-Creates base presentation for RC adapter to use by concrete implementations.
+Creates the base presentation for the RC adapter to use by concrete implementations.
 }
 \examples{
 # create you own RC adapter

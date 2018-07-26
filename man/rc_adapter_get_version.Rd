@@ -9,14 +9,14 @@ rc_adapter_get_version(rc_adapter, dir)
 \arguments{
 \item{rc_adapter}{rc adapter object}
 
-\item{dir}{path to directory to get version for. Folder must exist (type: character)}
+\item{dir}{path to the directory to get the version for. The folder must exist (type: character)}
 }
 \value{
 named list with following entries:
 \describe{
   \item{has_changes}{TRUE if changes detected by RC in the directory. (type: logical)}
   \item{revision}{revision reported by RC. (type: character)}
-  \item{latest}{latest revision reported by RC at repository. (type: character)}
+  \item{latest}{the latest revision reported by RC at the repository. (type: character)}
 }
 }
 \description{

@@ -8,23 +8,23 @@ prj_pack(prj = NULL, path = getwd(), pkgs = NULL, inc_master = TRUE,
   pack_ver = NULL, rver = NULL)
 }
 \arguments{
-\item{prj}{project object to pack. if not passed will pack loaded project or
-default whichever exists. Will init default project from working
+\item{prj}{project object to pack. if not passed the loaded project will be packed or
+the default whichever exists. Will init default project from the working
 directory if no default project exists. (type: rsuite_project, default: NULL)}
 
 \item{path}{folder path to put output pack into. The folder must exist.
 (type: character, default: \code{getwd()})}
 
-\item{pkgs}{names of packages to include into pack. If NULL will include all
+\item{pkgs}{names of packages to include in the pack. If NULL will include all
 project packages (type: character, default: NULL)}
 
-\item{inc_master}{if TRUE will include master scripts into pack.
+\item{inc_master}{if TRUE will include master scripts in the pack.
 (type: logical, default: TRUE)}
 
-\item{pack_ver}{if passed enforce version of pack to passed value.
+\item{pack_ver}{if passed enforce the version of the pack to the passed value.
 Expected form of version is DD.DD. (type: character, default: NULL)}
 
-\item{rver}{if passed enforce destination R version of pack.
+\item{rver}{if passed enforce destination R version of the pack.
 (type: character(1), default: NULL)}
 }
 \value{
@@ -32,24 +32,24 @@ invisible file path to pack file created. The file name will be
    in form prjpack_<ProjectName>_<version>.zip
 }
 \description{
-It collects all sources and assemblies found in project folder and packs them
-into single zip file.
+It collects all sources and assemblies found in the project folder and packs them
+into a single zip file.
 }
 \details{
-The function is heavily used for building project for alternative environments
+The function is heavily used for building projects for alternative environments
 (like in docker).
 
 Pack generated is stamped with version. It can be enforced with pack_ver
-parameter (zip will have suffix <pack_ver>x in the case). If version is not
+parameter (zip will have suffix <pack_ver>x in the case). If the version is not
 enforced it is detected out of ZipVersion setting in project PARAMETERS file or
-from maximal project packages version number. In that case revision number is
-appended to version: version number will be <ZipVersion>_<rc_ver>. Check for
-changes in project sources is performed for pack consistency. Resulted pack
+from the maximal project packages version number. In that case, the revision number
+is appended to version: version number will be <ZipVersion>_<rc_ver>. Check for
+changes in project sources is performed for pack consistency. The resulted pack
 is marked with the version detected so while building zip after unpacking will
-have the same version as original project.
+have the same version as the original project.
 
 Before building pack project packages will have version altered: revision will
-be added as least number to package version.
+be added as the least number to package version.
 
 Logs all messages onto rsuite logger. Use \code{logging::setLevel} to control
 logs verbosity.

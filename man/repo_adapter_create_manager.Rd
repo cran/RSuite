@@ -15,11 +15,11 @@ repo_adapter_create_manager(repo_adapter, ...)
 object of type rsuite_repo_adapter
 }
 \description{
-For repositories which needs some kind of connection to manage it initializes
+For repositories which need some kind of connection to manage it initializes
 appropriate resources.
 }
 \details{
-Raises error if fails to create manager.
+Raises an error if fails to create the manager.
 }
 \examples{
 # create you own Repo adapter

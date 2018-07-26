@@ -2,16 +2,16 @@
 % Please edit documentation in R/08_api_tmpl.R
 \name{tmpl_get_registered}
 \alias{tmpl_get_registered}
-\title{Returns all available of project/package templates}
+\title{Returns all available project/package templates}
 \usage{
 tmpl_get_registered()
 }
 \value{
-names of registered project and package templates together with their
+names of the registered project and package templates together with their
 file path
 }
 \description{
-Returns all available of project/package templates
+Returns all available project/package templates
 }
 \details{
 Project templates have to include a PARAMETERS file

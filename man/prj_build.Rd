@@ -23,8 +23,9 @@ package building time (type: logical, default: TRUE)}
 Builds project internal packages and installs them.
 }
 \details{
-Logs all messages from build onto rsuite logger. Use \code{logging::setLevel}
-to control logs verbosity. DEBUG level turns on build and download messages.
+Logs all messages from the building process onto the rsuite logger. Use
+\code{logging::setLevel} to control logs verbosity. DEBUG level turns
+on building and downloading messages.
 }
 \examples{
 \donttest{

@@ -7,7 +7,7 @@
 repo_adapter_create_base(name)
 }
 \arguments{
-\item{name}{name under which repository adapter will registered in RSuite. It
+\item{name}{name under which repository adapter will be registered in RSuite. It
 cannot contain whitespaces or comma. (type: character)}
 }
 \value{

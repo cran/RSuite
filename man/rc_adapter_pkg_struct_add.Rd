@@ -2,7 +2,7 @@
 % Please edit documentation in R/30_rc_adapter.R
 \name{rc_adapter_pkg_struct_add}
 \alias{rc_adapter_pkg_struct_add}
-\title{Puts package structure under RC adapter's managed version control.}
+\title{Puts the package structure under RC adapter's managed version control.}
 \usage{
 rc_adapter_pkg_struct_add(rc_adapter, params, name)
 }
@@ -11,11 +11,11 @@ rc_adapter_pkg_struct_add(rc_adapter, params, name)
 
 \item{params}{rsuite_project_params object of the project.}
 
-\item{name}{name of package to put under RC adapter's managed version control.
+\item{name}{name of the package to put under RC adapter's managed version control.
 Appropriate sub-folder must exist in project packages folder. (type: character)}
 }
 \description{
-Puts package structure under RC adapter's managed version control.
+Puts the package structure under RC adapter's managed version control.
 }
 \examples{
 # create you own RC adapter

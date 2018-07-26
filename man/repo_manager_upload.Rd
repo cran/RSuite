@@ -2,20 +2,20 @@
 % Please edit documentation in R/27_repo_manager.R
 \name{repo_manager_upload}
 \alias{repo_manager_upload}
-\title{Adds packages to managed repository.}
+\title{Adds packages to the managed repository.}
 \usage{
 repo_manager_upload(repo_manager, src_dir, types)
 }
 \arguments{
 \item{repo_manager}{repo manager object.}
 
-\item{src_dir}{local directory repository path. Directory must exist. (type: character)}
+\item{src_dir}{local directory repository path. The directory must exist. (type: character)}
 
 \item{types}{type of packages to sync. If missing all project supported
-package types will by synced. (type: character(N))}
+package types will be synced. (type: character(N))}
 }
 \description{
-Adds packages to managed repository.
+Adds packages to the managed repository.
 }
 \examples{
 # create you own repo adapter

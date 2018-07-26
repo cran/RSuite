@@ -2,18 +2,18 @@
 % Please edit documentation in R/02_api_prj.R
 \name{prj_start}
 \alias{prj_start}
-\title{Creates project structure at specified path.}
+\title{Creates project structure at the specified path.}
 \usage{
 prj_start(name = NULL, path = getwd(), skip_rc = FALSE,
   tmpl = "builtin")
 }
 \arguments{
-\item{name}{name of project to create. It must not contain special characters
+\item{name}{name of the project to create. It must not contain special characters
 like \\/\"\'<> otherwise project folder could not be created. It can be NULL.
-If so project will be created at path directly with name of the first folder.
+If so project will be created at path directly with the name of the first folder.
 (type: character).}
 
-\item{path}{path to folder where project structure should be created.}
+\item{path}{path to the folder where project structure should be created.}
 
 \item{skip_rc}{if TRUE skip adding project under revision control.
 (type: logical, default: FALSE)}
@@ -23,20 +23,20 @@ structure  creation.
 (type: character).}
 }
 \value{
-rsuite_project object for project just created.
+rsuite_project object for the project just created.
 }
 \description{
-Creates project structure at specified path.
+Creates project structure at the specified path.
 }
 \details{
-Project is not loaded, just created.
+The project is not loaded, just created.
 
 If name passed folder under such name will be created and project structure
 will be placed under it. If not passed folder under path will contain project
-structure and project name will be assumed to be basename of path.
+structure and project name will be assumed to be basename of the path.
 
-Logs all messages from build onto rsuite logger. Use \code{logging::setLevel}
-to control logs verbosity. DEBUG level turns on build and download messages.
+Logs all messages from the building process onto the rsuite logger. Use \code{logging::setLevel}
+to control logs verbosity. DEBUG level turns on building and downloading messages.
 
 Project templates have to include a PARAMETERS file
 }

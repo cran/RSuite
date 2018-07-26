@@ -2,12 +2,12 @@
 % Please edit documentation in R/02_api_prj.R
 \name{prj_load}
 \alias{prj_load}
-\title{Loads project into environment so all master scripts can run.}
+\title{Loads project into the environment so all master scripts can run.}
 \usage{
 prj_load(path, prj = NULL)
 }
 \arguments{
-\item{path}{if prj is NULL, path will be used to init new project to load.
+\item{path}{if prj is NULL, the path will be used to init new project to load.
 If passed must be existing folder path. (type: character)}
 
 \item{prj}{project to load or NULL to use path for new project
@@ -15,7 +15,7 @@ initialization. If not path passed project will be initialized from working
 folder. (type: rsuite_project, default: NULL)}
 }
 \value{
-previously loaded project or NULL if no project have been loaded.
+previously loaded project or NULL if no project has been loaded.
 }
 \description{
 It changes \code{.libPaths()} so project internal environment is visible

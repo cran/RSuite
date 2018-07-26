@@ -2,7 +2,7 @@
 % Please edit documentation in R/11_install_prj_deps.R
 \name{pkg_inst_order}
 \alias{pkg_inst_order}
-\title{Detects order of installation of packages as permutation of input vector}
+\title{Detects order of installation of packages as a permutation of the input vector}
 \usage{
 pkg_inst_order(pkgs, db)
 }
@@ -16,6 +16,6 @@ numeric vector which is defining permutation of packages ta align
 them in order of installation (less dependent to more dependent).
 }
 \description{
-Detects order of installation of packages as permutation of input vector
+Detects order of installation of packages as a permutation of the input vector
 }
 \keyword{internal}

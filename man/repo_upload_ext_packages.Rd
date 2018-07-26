@@ -2,7 +2,7 @@
 % Please edit documentation in R/04_api_repo.R
 \name{repo_upload_ext_packages}
 \alias{repo_upload_ext_packages}
-\title{Uploads external packages into managed repository.}
+\title{Uploads external packages into the managed repository.}
 \usage{
 repo_upload_ext_packages(repo_manager, pkgs, prj = NULL,
   pkg_type = .Platform$pkgType, with_deps = FALSE)
@@ -18,12 +18,12 @@ working directory. (type: rsuite_project, default: NULL)}
 
 \item{pkg_type}{type of packages to upload (type: character, default: platform default)}
 
-\item{with_deps}{If TRUE will include pkgs dependencies while uploading into
+\item{with_deps}{If TRUE will include pkgs dependencies while uploading into the
 repository. Packages in repository satisfying pkgs requirements will not be
 included. (type: logical, default: FALSE)}
 }
 \description{
-It uses project to detect repositories to look for external packages in.
+It uses the project to detect repositories to look for external packages in.
 }
 \details{
 Logs all messages onto rsuite logger. Use \code{logging::setLevel} to

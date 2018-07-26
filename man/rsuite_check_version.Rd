@@ -2,15 +2,15 @@
 % Please edit documentation in R/01_api_rsuite.R
 \name{rsuite_check_version}
 \alias{rsuite_check_version}
-\title{Checks if newer version of RSuite is available.}
+\title{Checks if a newer version of RSuite is available.}
 \usage{
 rsuite_check_version()
 }
 \value{
-NULL if newer version is not available or newest available version number.
+NULL if a newer version is not available or newest available version number.
 }
 \description{
-Checks if newer version of RSuite is available.
+Checks if a newer version of RSuite is available.
 }
 \examples{
 \donttest{

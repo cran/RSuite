@@ -228,9 +228,13 @@ later usage and content index of used repositories.<br/></li>
 <p>To create a new project (called <code>my_project</code>) we have to call the following function:</p>
 
 <pre><code class="r">RSuite::prj_start(name = &#39;my_project&#39;)
-#&gt;  2018-07-03 18:02:12 INFO:rsuite:Project my_project has structure compliant with current version of RSuite(v0.30.241).
-#&gt;  2018-07-03 18:02:12 INFO:rsuite:Project my_project started.
-#&gt;  2018-07-03 18:02:12 WARNING:rsuite:Failed to detect RC manager for my_project
+#&gt;  Warning: replacing previous import &#39;git2r::content&#39; by &#39;httr::content&#39; when
+#&gt;  loading &#39;RSuite&#39;
+#&gt;  Warning: replacing previous import &#39;git2r::config&#39; by &#39;httr::config&#39; when
+#&gt;  loading &#39;RSuite&#39;
+#&gt;  2018-07-26 17:38:11 INFO:rsuite:Project my_project has structure compliant with current version of RSuite(v0.31.243).
+#&gt;  2018-07-26 17:38:11 INFO:rsuite:Project my_project started.
+#&gt;  2018-07-26 17:38:11 WARNING:rsuite:Failed to detect RC manager for my_project
 </code></pre>
 
 <p>The RSuite project is being created in folder not under git/svn control. This is the cause of warning you can see
@@ -270,6 +274,9 @@ script_path &lt;- (function() {
   if (!length(script_path)) {
     return(&quot;R&quot;)
   }
+  if (grepl(&quot;darwin&quot;, R.version$os)) {
+    base &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, base) # on MacOS ~+~ in path denotes whitespace
+  }
   return(normalizePath(script_path))
 })()
 
@@ -295,7 +302,7 @@ print(&quot;master.R sourced successfully.&quot;)
 <p>R Suite forces the users to keep logic in packages. To create a package (called <code>mypackage</code>) call the following function:</p>
 
 <pre><code class="r">RSuite::prj_start_package(name = &quot;mypackage&quot;, skip_rc = TRUE)
-#&gt;  2018-07-03 18:02:13 INFO:rsuite:Package mypackage started in project my_project.
+#&gt;  2018-07-26 17:38:12 INFO:rsuite:Package mypackage started in project my_project.
 </code></pre>
 
 <h2>Add custom package to master script</h2>
@@ -308,6 +315,9 @@ script_path &lt;- (function() {
   script_path &lt;- dirname(sub(&quot;--file=&quot;, &quot;&quot;, args[grep(&quot;--file=&quot;, args)]))
   if (!length(script_path)) {
     return(&quot;R&quot;)
+  }
+  if (grepl(&quot;darwin&quot;, R.version$os)) {
+    base &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, base) # on MacOS ~+~ in path denotes whitespace
   }
   return(normalizePath(script_path))
 })()
@@ -334,8 +344,8 @@ library(mypackage)
 <p>Adding a package to the project is not enough to use it. You have to build it. You can do this by calling the following function:</p>
 
 <pre><code class="r">RSuite::prj_build()
-#&gt;  2018-07-03 18:02:13 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2018-07-03 18:02:18 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2018-07-26 17:38:12 INFO:rsuite:Installing mypackage (for R 3.3) ...
+#&gt;  2018-07-26 17:38:18 INFO:rsuite:Successfuly installed 1 packages
 </code></pre>
 
 <p>Now you can check if your master script has access to the package <code>mypackage</code></p>
@@ -368,6 +378,9 @@ script_path &lt;- (function() {
   if (!length(script_path)) {
     return(&quot;R&quot;)
   }
+  if (grepl(&quot;darwin&quot;, R.version$os)) {
+    base &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, base) # on MacOS ~+~ in path denotes whitespace
+  }
   return(normalizePath(script_path))
 })()
 
@@ -395,8 +408,8 @@ hello_world(&quot;John&quot;)
 <p>You have to rebuild packages to have all the functionality available to master scripts. You do it with the following function call.</p>
 
 <pre><code class="r">RSuite::prj_build()
-#&gt;  2018-07-03 18:02:18 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2018-07-03 18:02:24 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2018-07-26 17:38:18 INFO:rsuite:Installing mypackage (for R 3.3) ...
+#&gt;  2018-07-26 17:38:23 INFO:rsuite:Successfuly installed 1 packages
 </code></pre>
 
 <p>And check if <code>R/master.R</code> works:</p>
@@ -420,7 +433,7 @@ hello_world(&quot;John&quot;)
 Type: Package
 Title: What the package does (short line)
 Version: 0.1
-Date: 2018-07-03
+Date: 2018-07-26
 Author: ws171913
 Maintainer: Who to complain to &lt;yourfault@somewhere.net&gt;
 Description: More about what it does (maybe more than one line)
@@ -435,7 +448,7 @@ Depends: data.table (&gt;= 1.10.1)
 <p>Lets rebuild package to have master scripts see the changes:</p>
 
 <pre><code class="r">RSuite::prj_build()
-#&gt;  2018-07-03 18:02:24 ERROR:rsuite:Some dependencies are not installed in project env: data.table.Please, install dependencies(Call RSuite::prj_install_deps)
+#&gt;  2018-07-26 17:38:24 ERROR:rsuite:Some dependencies are not installed in project env: data.table.Please, install dependencies(Call RSuite::prj_install_deps)
 #&gt;  Error: Some dependencies are not installed in project env: data.table.Please, install dependencies(Call RSuite::prj_install_deps)
 </code></pre>
 
@@ -446,13 +459,15 @@ Depends: data.table (&gt;= 1.10.1)
 <p>To install dependencies you have to call the following function:</p>
 
 <pre><code class="r">RSuite::prj_install_deps()
-#&gt;  2018-07-03 18:02:24 INFO:rsuite:Detecting repositories (for R 3.3)...
-#&gt;  2018-07-03 18:02:28 INFO:rsuite:Will look for dependencies in ...
-#&gt;  2018-07-03 18:02:28 INFO:rsuite:.          MRAN#1 = https://mran.microsoft.com/snapshot/2018-07-03 (win.binary, source)
-#&gt;  2018-07-03 18:02:28 INFO:rsuite:Collecting project dependencies (for R 3.3)...
-#&gt;  2018-07-03 18:02:28 INFO:rsuite:Resolving dependencies (for R 3.3)...
-#&gt;  2018-07-03 18:02:28 INFO:rsuite:Detected 1 dependencies to install. Installing...
-#&gt;  2018-07-03 18:02:33 INFO:rsuite:All dependencies successfully installed.
+#&gt;  2018-07-26 17:38:24 INFO:rsuite:Detecting repositories (for R 3.3)...
+#&gt;  2018-07-26 17:38:28 INFO:rsuite:Will look for dependencies in ...
+#&gt;  2018-07-26 17:38:28 INFO:rsuite:.          MRAN#1 = https://mran.microsoft.com/snapshot/2018-07-26 (win.binary, source)
+#&gt;  2018-07-26 17:38:28 INFO:rsuite:Collecting project dependencies (for R 3.3)...
+#&gt;  2018-07-26 17:38:28 INFO:rsuite:Resolving dependencies (for R 3.3)...
+#&gt;  2018-07-26 17:38:29 INFO:rsuite:The following packages are no longer available in the repository and will be updated: mypackage
+#&gt;  2018-07-26 17:38:29 INFO:rsuite:Detected 1 dependencies to install. Installing...
+#&gt;  2018-07-26 17:38:33 INFO:rsuite:The following packages are no longer available in the repository and will be updated: logging,mypackage
+#&gt;  2018-07-26 17:38:33 INFO:rsuite:All dependencies successfully installed.
 </code></pre>
 
 <p>From this output you can see that we use <code>MRAN</code> as our package repository. Moreover R Suite detected 1 dependency to be installed.</p>
@@ -460,8 +475,8 @@ Depends: data.table (&gt;= 1.10.1)
 <p>You can check if installation succeeded by calling the following function:</p>
 
 <pre><code class="r">RSuite::prj_build()
-#&gt;  2018-07-03 18:02:34 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2018-07-03 18:02:40 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2018-07-26 17:38:35 INFO:rsuite:Installing mypackage (for R 3.3) ...
+#&gt;  2018-07-26 17:38:41 INFO:rsuite:Successfuly installed 1 packages
 </code></pre>
 
 <p>Lets check what happens if you run our master script</p>
@@ -512,14 +527,14 @@ script_path &lt;- (function() {
   if (!length(script_path)) {
     return(&quot;R&quot;)
   }
+  if (grepl(&quot;darwin&quot;, R.version$os)) {
+    base &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, base) # on MacOS ~+~ in path denotes whitespace
+  }
   return(normalizePath(script_path))
 })()
 
 # Setting .libPaths() to point to libs folder
 source(file.path(script_path, &quot;set_env.R&quot;), chdir = T)
-
-config &lt;- load_config()
-args &lt;- args_parser()
 
 #library(mypackage)
 
@@ -534,9 +549,9 @@ logerror(&quot;Master error&quot;)
 <p>Lets check how it works</p>
 
 <pre><code class="r">source(&#39;R/master.R&#39;)
-#&gt;  2018-07-03 18:02:41 INFO::Master info
-#&gt;  2018-07-03 18:02:41 WARNING::Master warning
-#&gt;  2018-07-03 18:02:41 ERROR::Master error
+#&gt;  2018-07-26 17:38:41 INFO::Master info
+#&gt;  2018-07-26 17:38:41 WARNING::Master warning
+#&gt;  2018-07-26 17:38:41 ERROR::Master error
 </code></pre>
 
 <p>As you can see there are logging messages. You can see that debug message is missing as by default logging level is set to present only messages on <code>INFO</code> and higher levels.</p>
@@ -551,10 +566,9 @@ logerror(&quot;Master error&quot;)
 <p>Lets check how it works</p>
 
 <pre><code class="r">source(&#39;R/master.R&#39;)
-#&gt;  2018-07-03 18:02:41 INFO::Master info
-#&gt;  2018-07-03 18:02:41 DEBUG::Master debug
-#&gt;  2018-07-03 18:02:41 WARNING::Master warning
-#&gt;  2018-07-03 18:02:41 ERROR::Master error
+#&gt;  2018-07-26 17:38:41 INFO::Master info
+#&gt;  2018-07-26 17:38:41 WARNING::Master warning
+#&gt;  2018-07-26 17:38:41 ERROR::Master error
 </code></pre>
 
 <p>As you can see now debug logging message is printed.</p>
@@ -564,18 +578,18 @@ logerror(&quot;Master error&quot;)
 <p>Logging messages are stored in logs folder in files named with current date. You can check this by issuing a command</p>
 
 <pre><code class="r">list.files(path = &quot;./logs&quot;)
-#&gt;  [1] &quot;2018_07_03.log&quot;
+#&gt;  [1] &quot;2018_07_26.log&quot;
 </code></pre>
 
 <p>When you open this log in an editor you should see content similar to this</p>
 
-<pre><code>#&gt;  2018-07-03 18:02:41 INFO::Master info
-#&gt;  2018-07-03 18:02:41 WARNING::Master warning
-#&gt;  2018-07-03 18:02:41 ERROR::Master error
-#&gt;  2018-07-03 18:02:41 INFO::Master info
-#&gt;  2018-07-03 18:02:41 DEBUG::Master debug
-#&gt;  2018-07-03 18:02:41 WARNING::Master warning
-#&gt;  2018-07-03 18:02:41 ERROR::Master error
+<pre><code>#&gt;  2018-07-26 17:38:41 DEBUG::Master debug
+#&gt;  2018-07-26 17:38:41 WARNING::Master warning
+#&gt;  2018-07-26 17:38:41 ERROR::Master error
+#&gt;  2018-07-26 17:38:41 INFO::Master info
+#&gt;  2018-07-26 17:38:41 DEBUG::Master debug
+#&gt;  2018-07-26 17:38:41 WARNING::Master warning
+#&gt;  2018-07-26 17:38:41 ERROR::Master error
 </code></pre>
 
 <p>As you can see this is very similar to the output you saw in console.</p>
@@ -600,10 +614,9 @@ hello_world &lt;- function(name) {
 <pre><code class="r">devtools::load_all(&quot;packages/mypackage&quot;)
 #&gt;  Loading mypackage
 hello_world(&quot;John&quot;)
-#&gt;  2018-07-03 18:02:41 INFO:mypackage:Package info
-#&gt;  2018-07-03 18:02:41 DEBUG:mypackage:Package debug
-#&gt;  2018-07-03 18:02:41 WARNING:mypackage:Package warning
-#&gt;  2018-07-03 18:02:41 ERROR:mypackage:Package error
+#&gt;  2018-07-26 17:38:42 INFO:mypackage:Package info
+#&gt;  2018-07-26 17:38:42 WARNING:mypackage:Package warning
+#&gt;  2018-07-26 17:38:42 ERROR:mypackage:Package error
 #&gt;  [1] &quot;Hello John! Good to see you again.&quot;
 </code></pre>
 
@@ -619,8 +632,8 @@ hello_world(&quot;John&quot;)
 <p>RSuite allows the user to lock the project environment. It collects all dependencies&#39; versions and stores them in a lock file to enforce exact dependency versions in the future. To lock the project environment we have to call the following function:</p>
 
 <pre><code class="r">RSuite::prj_lock_env()
-#&gt;  2018-07-03 18:02:41 INFO:rsuite:The project environment was locked successfully
-#&gt;  2018-07-03 18:02:41 INFO:rsuite:Project environment has been locked
+#&gt;  2018-07-26 17:38:42 INFO:rsuite:The project environment was locked successfully
+#&gt;  2018-07-26 17:38:42 INFO:rsuite:Project environment has been locked
 </code></pre>
 
 <p>The lock file is in the &#39;deployment&#39; directory under the &#39;env.lock&#39; name. It is a dcf file that stores information about packages in the local environment together with their versions. A sample record from the &#39;env.lock&#39; file is presented below:</p>
@@ -638,7 +651,7 @@ hello_world(&quot;John&quot;)
 <p>To safely unlock the local project environment we use the following function:</p>
 
 <pre><code class="r">RSuite::prj_unlock_env()
-#&gt;  2018-07-03 18:02:41 INFO:rsuite:The project environment has been unlocked.
+#&gt;  2018-07-26 17:38:42 INFO:rsuite:The project environment has been unlocked.
 </code></pre>
 
 <p>The function deletes an existing &#39;env.lock&#39; file.</p>
@@ -656,14 +669,14 @@ script_path &lt;- (function() {
   if (!length(script_path)) {
     return(&quot;R&quot;)
   }
+  if (grepl(&quot;darwin&quot;, R.version$os)) {
+    base &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, base) # on MacOS ~+~ in path denotes whitespace
+  }
   return(normalizePath(script_path))
 })()
 
 # Setting .libPaths() to point to libs folder
 source(file.path(script_path, &quot;set_env.R&quot;), chdir = T)
-
-config &lt;- load_config()
-args &lt;- args_parser()
 
 library(mypackage)
 
@@ -673,32 +686,33 @@ hello_world(&quot;John&quot;)
 <p>Now lets check that all project dependencies have been collected:</p>
 
 <pre><code class="r">RSuite::prj_install_deps()
-#&gt;  2018-07-03 18:02:41 INFO:rsuite:Detecting repositories (for R 3.3)...
-#&gt;  2018-07-03 18:02:41 INFO:rsuite:Will look for dependencies in ...
-#&gt;  2018-07-03 18:02:41 INFO:rsuite:.          MRAN#1 = https://mran.microsoft.com/snapshot/2018-07-03 (win.binary, source)
-#&gt;  2018-07-03 18:02:41 INFO:rsuite:Collecting project dependencies (for R 3.3)...
-#&gt;  2018-07-03 18:02:41 INFO:rsuite:Resolving dependencies (for R 3.3)...
-#&gt;  2018-07-03 18:02:42 INFO:rsuite:No dependencies to install.
+#&gt;  2018-07-26 17:38:42 INFO:rsuite:Detecting repositories (for R 3.3)...
+#&gt;  2018-07-26 17:38:42 INFO:rsuite:Will look for dependencies in ...
+#&gt;  2018-07-26 17:38:42 INFO:rsuite:.          MRAN#1 = https://mran.microsoft.com/snapshot/2018-07-26 (win.binary, source)
+#&gt;  2018-07-26 17:38:42 INFO:rsuite:Collecting project dependencies (for R 3.3)...
+#&gt;  2018-07-26 17:38:42 INFO:rsuite:Resolving dependencies (for R 3.3)...
+#&gt;  2018-07-26 17:38:43 INFO:rsuite:The following packages are no longer available in the repository and will be updated: mypackage
+#&gt;  2018-07-26 17:38:43 INFO:rsuite:No dependencies to install.
 </code></pre>
 
-<p>As you did not add any new dependencies R Suite smartly understands it and do not repeat lengthy dependencies installation phase.</p>
+<p>As you did not add any new dependencies R Suite smartly understands it and does not repeat lengthy dependencies installation phase.</p>
 
 <p>Lets rebuild our custom packages:</p>
 
 <pre><code class="r">RSuite::prj_build()
-#&gt;  2018-07-03 18:02:43 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2018-07-03 18:02:49 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2018-07-26 17:38:45 INFO:rsuite:Installing mypackage (for R 3.3) ...
+#&gt;  2018-07-26 17:38:51 INFO:rsuite:Successfuly installed 1 packages
 </code></pre>
 
 <p>To build a deployment package you use the following function (we specify there to put the deployment package with <code>path</code> argument):</p>
 
 <pre><code class="r">RSuite::prj_zip(path = tempdir())
-#&gt;  2018-07-03 18:02:49 WARNING:rsuite:Project environment is not locked!
-#&gt;  2018-07-03 18:02:49 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2018-07-03 18:02:55 INFO:rsuite:Successfuly installed 1 packages
-#&gt;  2018-07-03 18:02:55 INFO:rsuite:Preparing files for zipping...
-#&gt;  2018-07-03 18:02:55 INFO:rsuite:... done. Creating zip file my_project_0.1x.zip ...
-#&gt;  2018-07-03 18:02:56 INFO:rsuite:Zip file created: C:\Users\ws171913\AppData\Local\Temp\Rtmp0OTJLG/my_project_0.1x.zip
+#&gt;  2018-07-26 17:38:51 WARNING:rsuite:Project environment is not locked!
+#&gt;  2018-07-26 17:38:51 INFO:rsuite:Installing mypackage (for R 3.3) ...
+#&gt;  2018-07-26 17:38:57 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2018-07-26 17:38:57 INFO:rsuite:Preparing files for zipping...
+#&gt;  2018-07-26 17:38:57 INFO:rsuite:... done. Creating zip file my_project_0.1x.zip ...
+#&gt;  2018-07-26 17:38:58 INFO:rsuite:Zip file created: C:\Users\ws171913\AppData\Local\Temp\RtmpUrTpGv/my_project_0.1x.zip
 </code></pre>
 
 <p>As project is not under version control and contains only one package R Suite chooses default version for the deployment
@@ -711,12 +725,12 @@ deployment package is versioned by source code tag (tag under Git or revision nu
 prevents building deployment package unless you enforce deployment package version explicitly:</p>
 
 <pre><code class="r">RSuite::prj_zip(path = tempdir(), zip_ver = &#39;1.0&#39;)
-#&gt;  2018-07-03 18:02:56 WARNING:rsuite:Project environment is not locked!
-#&gt;  2018-07-03 18:02:56 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2018-07-03 18:03:02 INFO:rsuite:Successfuly installed 1 packages
-#&gt;  2018-07-03 18:03:02 INFO:rsuite:Preparing files for zipping...
-#&gt;  2018-07-03 18:03:02 INFO:rsuite:... done. Creating zip file my_project_1.0x.zip ...
-#&gt;  2018-07-03 18:03:03 INFO:rsuite:Zip file created: C:\Users\ws171913\AppData\Local\Temp\Rtmp0OTJLG/my_project_1.0x.zip
+#&gt;  2018-07-26 17:38:59 WARNING:rsuite:Project environment is not locked!
+#&gt;  2018-07-26 17:38:59 INFO:rsuite:Installing mypackage (for R 3.3) ...
+#&gt;  2018-07-26 17:39:05 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2018-07-26 17:39:05 INFO:rsuite:Preparing files for zipping...
+#&gt;  2018-07-26 17:39:05 INFO:rsuite:... done. Creating zip file my_project_1.0x.zip ...
+#&gt;  2018-07-26 17:39:06 INFO:rsuite:Zip file created: C:\Users\ws171913\AppData\Local\Temp\RtmpUrTpGv/my_project_1.0x.zip
 </code></pre>
 
 <p>You have created file <code>my_project_1.0x.zip</code> that contains all information necessary to run your solution on a production environment.</p>
@@ -748,9 +762,9 @@ cat(list.files(path = file.path(tempdir(), &quot;prod&quot;, &quot;my_project&qu
                   args = file.path(tempdir(), &quot;prod&quot;, &quot;my_project&quot;, &quot;R&quot;, &quot;master.R&quot;),
                   stdout = TRUE)
 cat(output, sep = &quot;\n&quot;)
-#&gt;  2018-07-03 18:03:04 INFO:mypackage:Package info
-#&gt;  2018-07-03 18:03:04 WARNING:mypackage:Package warning
-#&gt;  2018-07-03 18:03:04 ERROR:mypackage:Package error
+#&gt;  2018-07-26 17:39:07 INFO:mypackage:Package info
+#&gt;  2018-07-26 17:39:07 WARNING:mypackage:Package warning
+#&gt;  2018-07-26 17:39:07 ERROR:mypackage:Package error
 #&gt;  [1] &quot;Hello John! Good to see you again.&quot;
 </code></pre>
 

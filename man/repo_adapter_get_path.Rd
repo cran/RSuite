@@ -2,7 +2,7 @@
 % Please edit documentation in R/20_repo_adapter.R
 \name{repo_adapter_get_path}
 \alias{repo_adapter_get_path}
-\title{Returns adapter path related to project to use for dependencies resolution.}
+\title{Returns the adapter path related to the project to use for dependencies resolution.}
 \usage{
 repo_adapter_get_path(repo_adapter, params, ix = NA)
 }
@@ -15,10 +15,10 @@ repo_adapter_get_path(repo_adapter, params, ix = NA)
 paths for the adapter. (type: integer, default: NA)}
 }
 \value{
-path to repository for the project.
+path to the repository for the project.
 }
 \description{
-Returns adapter path related to project to use for dependencies resolution.
+Returns the adapter path related to the project to use for dependencies resolution.
 }
 \examples{
 # create you own Repo adapter

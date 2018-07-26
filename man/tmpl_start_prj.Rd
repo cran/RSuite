@@ -10,7 +10,7 @@ tmpl_start_prj(name, path = NULL)
 \item{name}{name of the template being created. (type: character(1))}
 
 \item{path}{path to the directory where the template should be created. If
-NULL will use folder with user template. (type: character(1), default: NULL)}
+NULL will use the folder with user template. (type: character(1), default: NULL)}
 }
 \description{
 Creates a new project template with the specified name, in the specified path.

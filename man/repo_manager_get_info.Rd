@@ -2,7 +2,7 @@
 % Please edit documentation in R/27_repo_manager.R
 \name{repo_manager_get_info}
 \alias{repo_manager_get_info}
-\title{Returns informations on repo manager.}
+\title{Returns information on repo manager.}
 \usage{
 repo_manager_get_info(repo_manager)
 }
@@ -15,11 +15,11 @@ named list with following entries:
   \item{types}{Types of packages manager can manage. (type: character)}
   \item{rver}{R version repo manager is managing. NA if repo
     manager is managing source packages. (type: character)}
-  \item{url}{Url to repository. (type: character)}
+  \item{url}{Url to the repository. (type: character)}
 }
 }
 \description{
-Returns informations on repo manager.
+Returns information on repo manager.
 }
 \examples{
 # create you own Repo adapter

@@ -53,6 +53,54 @@ denorm_version <- function(ver) {
   return(ver)
 }
 
+#' Retrieves version numbers from the input version string e.g. 1.2.0
+#' returns  c(1, 2, 0)
+#'
+#' @param vers list of versions which can contain blocks of digits separeded with a dot
+#' or dash character (type: character).
+#'
+#' @return list of versiong digit vectors (type: list)
+#'
+get_version_numbers <- function(vers) {
+  return(strsplit(vers, split = "[.-]"))
+}
+
+get_closest_version <- function(ver, type) {
+  ver_digits <- as.integer(get_version_numbers(ver)[[1]])
+  ver_digits_len <- length(ver_digits)
+
+  assert(ver_digits_len <= 4, "Incorrect version format: %s", ver)
+
+  if (ver_digits_len == 3 && type == "next") {
+    result <- paste(c(ver_digits, "1"), collapse = ".")
+    return(result)
+  }
+
+  carry <- ifelse(type == "prev", -1, 1)
+  lower_limit <- -1
+  upper_limit <- 10000
+
+  while (ver_digits_len != 0) {
+    ver_digits[ver_digits_len] <- ver_digits[ver_digits_len] + carry
+
+    if (ver_digits_len < 4) {
+      upper_limit <- 10
+    }
+
+    if (ver_digits[ver_digits_len] == lower_limit || ver_digits[ver_digits_len] == upper_limit) {
+      ver_digits[ver_digits_len] <- 0
+    } else {
+      break
+    }
+
+    ver_digits_len <- ver_digits_len - 1
+  }
+
+  result <- paste(ver_digits, collapse = ".")
+  return(result)
+
+}
+
 #'
 #' Returns standard columns expected in data.frame returned from available.packages.
 #'
@@ -183,7 +231,7 @@ vers.build <- function(pkg_names = c(), vmin = NA, vmax = NA, avails = NULL) {
 #' @keywords internal
 #' @noRd
 #'
-vers.check_against <- function(ver, oth) {
+vers.check_against <- function(ver, oth, extra_reqs = NULL) {
   stopifnot(is.versions(ver))
   stopifnot(is.versions(oth))
   stopifnot(ver$has_avails() || oth$has_avails())
@@ -204,10 +252,15 @@ vers.check_against <- function(ver, oth) {
 
   # test against version availability and version requirements
   test_ver <- .df2ver(ver_diff, avails = avails)
+  test_ver <- vers.filter_sub_deps(test_ver, extra_reqs)
+
+  nonavail <- rbind(nonavail, ver_diff[!(ver_diff$pkg %in% test_ver$get_avails()$Package), ])
+  ver_diff <- ver_diff[!(ver_diff$pkg %in% nonavail$pkg), ]
+
   unfeasibles <- ver_diff[ver_diff$pkg %in% vers.get_unfeasibles(test_ver), ]
   ver_diff <- ver_diff[!(ver_diff$pkg %in% unfeasibles$pkg), ]
 
-  found <- .df2ver(ver_diff, avails = avails)
+  found <- .df2ver(ver_diff, avails = test_ver$get_avails())
   missing <- .df2ver(rbind(nonavail, unfeasibles))
 
   return(check_res.build(found = found, missing = missing))
@@ -377,6 +430,7 @@ vers.pick_available_pkgs <- function(ver) {
   stopifnot(ver$has_avails())
 
   avail_ver <- ver$get_avails()
+
   avail_ver <- avail_ver[order(avail_ver$Package, avail_ver$NVersion, decreasing = TRUE), ]
   avail_ver <- avail_ver[!duplicated(avail_ver$Package), ]
 
@@ -545,6 +599,14 @@ vers.from_deps <- function(deps, pkg_name = NA) {
                    if (ver_op == "<=") {
                      return(vers.build(pdesc, vmin = NA, vmax = ver))
                    }
+                   if (ver_op == ">") {
+                     ver <- get_closest_version(ver, type = "next")
+                     return(vers.build(pdesc, vmin = ver, vmax = NA))
+                   }
+                   if (ver_op == "<") {
+                     ver <- get_closest_version(ver, type = "prev")
+                     return(vers.build(pdesc, vmin = NA, vmax = ver))
+                   }
 
                    if (is.na(pkg_name)) {
                      assert(FALSE,
@@ -583,6 +645,48 @@ vers.from_deps_in_avails <- function(avails) {
     pkg_vers
   })
   do.call("vers.union", pdfs)
+}
+
+
+#'
+#' Removes packages from ver avails whose dependencies do not satisfy requirements
+#' from ver and extra_reqs.
+#'
+#' @param ver version object to filter
+#'
+#' @param extra_reqs additional requirements
+#'
+#' @keywords internal
+#' @noRd
+#'
+vers.filter_sub_deps <- function(ver, extra_reqs = NULL) {
+  stopifnot(is.versions(ver))
+  stopifnot(ver$has_avails())
+  stopifnot(is.null(extra_reqs) || (is.versions(extra_reqs) && !extra_reqs$has_avails()))
+
+  all_pkgs <- as.data.frame(ver$get_avails())
+
+  if (is.null(extra_reqs)) {
+    extra_reqs <- ver
+  } else {
+    extra_reqs <- vers.union(vers.drop_avails(extra_reqs), vers.drop_avails(ver))
+  }
+
+
+  # Check dependency requirements of available packages
+  is_compatible <- by(all_pkgs, seq_len(nrow(all_pkgs)), FUN = function(deps) {
+    pkg_deps <- unname(unlist(deps[, c("Depends", "Imports", "LinkingTo")]))
+    pkg_vers <- vers.from_deps(deps = paste(pkg_deps[!is.na(pkg_deps)], collapse = ", "),
+                               pkg_name = deps$Package)
+    pkg_vers$pkgs <- pkg_vers$pkgs[pkg_vers$pkgs$pkg %in% extra_reqs$pkgs$pkg, ] # keep only packages from vers
+    dep_req_vers <- vers.union(pkg_vers, vers.drop_avails(extra_reqs))
+
+    length(vers.get_unfeasibles(dep_req_vers)) == 0
+  })
+
+  all_pkgs <- all_pkgs[is_compatible, ]
+  ver$pkgs <- ver$pkgs[ver$pkgs$pkg %in% all_pkgs$Package, ]
+  return(vers.add_avails(ver, all_pkgs))
 }
 
 

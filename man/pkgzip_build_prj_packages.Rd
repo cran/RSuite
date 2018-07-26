@@ -15,7 +15,7 @@ or NULL to include all project packages (type: character, default: NULL)}
 \item{prj}{project object to use. If not passed will init project from
 working directory. (type: rsuite_project, default: NULL)}
 
-\item{zip_ver}{if passed enforce version of PKGZIP package to passed value.
+\item{zip_ver}{if passed enforce the version of PKGZIP package to the passed value.
 Expected form of version is DD.DD. (type: character, default: NULL)}
 
 \item{pkg_type}{type of packages to build (type: character, default: platform default)}
@@ -27,7 +27,7 @@ Expected form of version is DD.DD. (type: character, default: NULL)}
 (type: logical, default: FALSE)}
 
 \item{filter_repo}{repository address to not include dependencies available in.
-In project dependencies will nether be filtered. If NULL will not filter
+In a project, dependencies will never be filtered. If NULL will not filter
 dependencies. Will be omitted if with_deps is FALSE. (type: character(1), default: NULL)}
 
 \item{skip_build_steps}{character vector with steps to skip while building
@@ -37,7 +37,7 @@ dependencies. Will be omitted if with_deps is FALSE. (type: character(1), defaul
   \item{docs}{Try build documentation with roxygen}
   \item{imps}{Perform imports validation}
   \item{tests}{Run package tests}
-  \item{rcpp_attribs}{Run rppAttribs on package}
+  \item{rcpp_attribs}{Run rppAttribs on the package}
   \item{vignettes}{Build package vignettes}
 }
 (type: character(N), default: NULL).}

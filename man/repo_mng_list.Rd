@@ -2,7 +2,7 @@
 % Please edit documentation in R/04_api_repo.R
 \name{repo_mng_list}
 \alias{repo_mng_list}
-\title{Retrieve list of packages available in repository.}
+\title{Retrieve the list of available packages in the repository.}
 \usage{
 repo_mng_list(repo_manager, pkg_type = .Platform$pkgType, no.cache = FALSE)
 }
@@ -20,7 +20,7 @@ repo_mng_list(repo_manager, pkg_type = .Platform$pkgType, no.cache = FALSE)
 data.frame of the same structure as available.packages returns.
 }
 \description{
-Retrieve list of packages available in repository.
+Retrieve the list of available packages in the repository.
 }
 \examples{
 \donttest{

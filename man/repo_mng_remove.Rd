@@ -2,7 +2,7 @@
 % Please edit documentation in R/04_api_repo.R
 \name{repo_mng_remove}
 \alias{repo_mng_remove}
-\title{Removes packages from repository.}
+\title{Removes packages from the repository.}
 \usage{
 repo_mng_remove(repo_manager, toremove, pkg_type = .Platform$pkgType)
 }
@@ -17,7 +17,7 @@ At lease Package and Version columns must be present. (type: data.frame)}
 (type: character, default: .Platform$pkgType)}
 }
 \description{
-Removes packages from repository.
+Removes packages from the repository.
 }
 \examples{
 \donttest{

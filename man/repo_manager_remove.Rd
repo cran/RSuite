@@ -21,7 +21,7 @@ data.frame containing packages removed with Package and Version columns.
 Removes specified packages from the repository.
 }
 \examples{
-# create you own repo adapter
+# create your own repo adapter
 repo_adapter_create_own <- function() {
   result <- repo_adapter_create_base("Own")
   class(result) <- c("repo_adapter_own", class(result))

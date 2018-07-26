@@ -9,7 +9,7 @@ rc_adapter_is_under_control(rc_adapter, dir)
 \arguments{
 \item{rc_adapter}{rc adapter object}
 
-\item{dir}{path to directory to check. Folder must exist (type: character)}
+\item{dir}{path to the directory to check. The folder must exist (type: character)}
 }
 \value{
 TRUE if dir is under version control.

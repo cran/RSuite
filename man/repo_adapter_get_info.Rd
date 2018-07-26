@@ -2,7 +2,7 @@
 % Please edit documentation in R/20_repo_adapter.R
 \name{repo_adapter_get_info}
 \alias{repo_adapter_get_info}
-\title{Returns informations about repository the adapter is working on.}
+\title{Returns information about repository the adapter is working on.}
 \usage{
 repo_adapter_get_info(repo_adapter, params)
 }
@@ -15,13 +15,13 @@ repo_adapter_get_info(repo_adapter, params)
 named list with following entries:
 \describe{
   \item{readonly}{TRUE if the repository is for reading only (type:logical)}
-  \item{reliable}{TRUE if content of the repository does not change over time
-    unless repository changes enforce change of project itself (like project
+  \item{reliable}{TRUE if the content of the repository does not change over time
+    unless repository changes enforce changes of the project itself (like project
     local repository) (type: logical).}
 }
 }
 \description{
-Returns informations about repository the adapter is working on.
+Returns information about repository the adapter is working on.
 }
 \examples{
 # create you own Repo adapter

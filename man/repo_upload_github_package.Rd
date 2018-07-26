@@ -2,7 +2,7 @@
 % Please edit documentation in R/04_api_repo.R
 \name{repo_upload_github_package}
 \alias{repo_upload_github_package}
-\title{Loads package from github repository.}
+\title{Loads package from the GitHub repository.}
 \usage{
 repo_upload_github_package(repo_manager, repo, ..., prj = NULL,
   pkg_type = .Platform$pkgType, with_deps = FALSE,
@@ -14,14 +14,14 @@ repo_upload_github_package(repo_manager, repo, ..., prj = NULL,
 \item{repo}{repository address in format username/repo[/subdir][\@ref|#pull]. See
 \code{devtools::install_github} for more information.}
 
-\item{...}{github specific parameters passed to \code{devtools::install_github}.}
+\item{...}{GitHub specific parameters passed to \code{devtools::install_github}.}
 
 \item{prj}{project object to use. If not passed will init project from
 working directory. (type: rsuite_project, default: NULL)}
 
 \item{pkg_type}{type of packages to upload (type: character, default: platform default)}
 
-\item{with_deps}{If TRUE will include pkgs dependencies while uploading into
+\item{with_deps}{If TRUE will include pkgs dependencies while uploading into the
 repository. Packages in repository satisfying pkgs requirements will not be
 included. (type: logical, default: FALSE)}
 
@@ -32,16 +32,16 @@ included. (type: logical, default: FALSE)}
   \item{docs}{Try build documentation with roxygen}
   \item{imps}{Perform imports validation}
   \item{tests}{Run package tests}
-  \item{rcpp_attribs}{Run rppAttribs on package}
+  \item{rcpp_attribs}{Run rppAttribs on the package}
   \item{vignettes}{Build package vignettes}
 }
 (type: character(N), default: NULL).}
 
 \item{keep_sources}{if TRUE downloaded package sources will not be removed
-after build. (type: logical, default: FALSE)}
+after building. (type: logical, default: FALSE)}
 }
 \description{
-It will download github repository, build package into package file and will
+It will download GitHub repository, build package into package file and will
 upload it into the repository. It will search dependencies in provided
 project's repositories.
 }

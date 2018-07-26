@@ -2,14 +2,14 @@
 % Please edit documentation in R/07_api_sysreqs.R
 \name{sysreqs_script}
 \alias{sysreqs_script}
-\title{Creates script to update system to satisfy project requirements.}
+\title{Creates a script to update the system to satisfy project requirements.}
 \usage{
 sysreqs_script(prj = NULL)
 }
 \arguments{
-\item{prj}{project object to process sys requirements for. If not passed will
-use loaded project or default whichever exists. Will init default project
-from working directory if no default project exists.
+\item{prj}{project object to process sys requirements for. If not passed the
+loaded project will be used or the default whichever exists. Will init default
+project from working directory if no default project exists.
 (type: rsuite_project, default: NULL)}
 }
 \value{
@@ -18,7 +18,7 @@ invisible path to script file created or NULL if no system
 }
 \description{
 Collects system requirements with \code{\link{sysreqs_collect}} and creates
-script to builds/install them. It creates .cmd script for Windows and bash
+a script to build/install them. It creates a .cmd script for Windows and a bash
 script for Linuxes.
 }
 \examples{

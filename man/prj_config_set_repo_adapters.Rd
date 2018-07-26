@@ -11,16 +11,16 @@ prj_config_set_repo_adapters(repos, prj = NULL)
 Each should be in form <repo_adapter_name>[<arg>]. They should be all
 registered. (type: character)}
 
-\item{prj}{project object to update configuration for. If not passed will use loaded
-project or default whichever exists. Will init default project from working
-directory if no default project exists. (type: rsuite_project, default: NULL)}
+\item{prj}{project object to update configuration for. If not passed the loaded
+project will be used or the default whichever exists. Will init the default project
+from the working directory if no default project exists. (type: rsuite_project, default: NULL)}
 }
 \description{
 Updates project configuration to use only specified repository adapters.
 }
 \details{
 Project configuration (together with repositories to be used) is stored in
-PARAMETERS file in project folder.
+PARAMETERS file in the project folder.
 
 After project configuration have been changed repository adapters are
 initialized on the project.

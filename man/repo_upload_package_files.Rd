@@ -2,7 +2,7 @@
 % Please edit documentation in R/04_api_repo.R
 \name{repo_upload_package_files}
 \alias{repo_upload_package_files}
-\title{Uploads package file(s) into managed repository.}
+\title{Uploads package file(s) into the managed repository.}
 \usage{
 repo_upload_package_files(repo_manager, files)
 }
@@ -12,10 +12,10 @@ repo_upload_package_files(repo_manager, files)
 \item{files}{vector of files to upload. (type: character)}
 }
 \description{
-Uploads package file(s) into managed repository.
+Uploads package file(s) into the managed repository.
 }
 \details{
-Logs all messages onto rsuite logger. Use \code{logging::setLevel} to control
+Logs all messages onto the rsuite logger. Use \code{logging::setLevel} to control
 logs verbosity.
 }
 \examples{

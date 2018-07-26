@@ -7,8 +7,8 @@
 prj_unlock_env(prj = NULL)
 }
 \arguments{
-\item{prj}{project object to be unlocked. if not passed will lock loaded
-project or default whichever exists. Will init default project from working
+\item{prj}{project object to be unlocked. if not passed the loaded project will be
+locked or the default whichever exists. Will init default project from the working
 directory if no default project exists.
 (type: rsuite_project, default: NULL)}
 }
@@ -17,20 +17,21 @@ It removes the lock file created with \code{\link{prj_lock_env}}. If the project
 environment is not locked (there is no lock file) the prj_unlock_env will fail.
 }
 \examples{
-# create exemplary project base folder
-prj_base <- tempfile("example_")
-dir.create(prj_base, recursive = TRUE, showWarnings = FALSE)
+\donttest{
+  # create exemplary project base folder
+  prj_base <- tempfile("example_")
+  dir.create(prj_base, recursive = TRUE, showWarnings = FALSE)
 
-# start project
-prj <- prj_start("my_project", skip_rc = TRUE, path = prj_base)
+  # start project
+  prj <- prj_start("my_project", skip_rc = TRUE, path = prj_base)
 
-# build project local environment
-prj_install_deps(prj = prj)
+  # build project local environment
+  prj_install_deps(prj = prj)
 
-# lock project environment
-prj_lock_env(prj = prj)
+  # lock project environment
+  prj_lock_env(prj = prj)
 
-# unlock project environment
-prj_unlock_env(prj = prj)
-
+  # unlock project environment
+  prj_unlock_env(prj = prj)
+}
 }

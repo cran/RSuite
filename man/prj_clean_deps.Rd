@@ -2,21 +2,21 @@
 % Please edit documentation in R/02_api_prj.R
 \name{prj_clean_deps}
 \alias{prj_clean_deps}
-\title{Uninstalls unused packages from project local environment.}
+\title{Uninstalls unused packages from the local project environment.}
 \usage{
 prj_clean_deps(prj = NULL)
 }
 \arguments{
-\item{prj}{project to clean dependencies of. If not passed will use project
-base in working directory. (type: rsuite_project, default: NULL)}
+\item{prj}{project to clean dependencies of. If not passed will use the project
+base in the working directory. (type: rsuite_project, default: NULL)}
 }
 \description{
 Checks if all dependencies installed are required by project packages or
 master scripts and removes those which are not required any more.
 }
 \details{
-Logs all messages from build onto rsuite logger. Use \code{logging::setLevel}
-to control logs verbosity. DEBUG level turns on build and download messages.
+Logs all messages from the building process onto the rsuite logger. Use \code{logging::setLevel}
+to control logs verbosity. DEBUG level turns on building and downloading messages.
 }
 \examples{
 \donttest{

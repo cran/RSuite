@@ -7,9 +7,9 @@
 prj_lock_env(prj = NULL)
 }
 \arguments{
-\item{prj}{project object to be locked. If not passed will lock loaded
-project or default whichever exists. Will init default project from
-working directory if no default project exists.
+\item{prj}{project object to be locked. If not passed the loaded project
+will be locked or the default whichever exists. Will init default project from
+the working directory if no default project exists.
 (type: rsuite_project, default: NULL)}
 }
 \description{
@@ -29,28 +29,29 @@ When dependencies are being installed (using \code{\link{prj_install_deps}})
 the 'env.lock' file will be used to detect whether any package will change
 versions. If that's the case a warning message will be displayed like this:
 
-\code{...:rsuite: The following packages will be updated from last lock: colorspace}
+\code{...:rsuite: The following packages will be updated from the last lock: colorspace}
 
 The feature allows preventing errors caused by newer versions of packages
 which might work differently than previous versions used in the project.
 }
 \examples{
-# create exemplary project base folder
-prj_base <- tempfile("example_")
-dir.create(prj_base, recursive = TRUE, showWarnings = FALSE)
+\donttest{
+  # create exemplary project base folder
+  prj_base <- tempfile("example_")
+  dir.create(prj_base, recursive = TRUE, showWarnings = FALSE)
 
-# start project
-prj <- prj_start("my_project", skip_rc = TRUE, path = prj_base)
+  # start project
+  prj <- prj_start("my_project", skip_rc = TRUE, path = prj_base)
 
-# build project local environment
-prj_install_deps(prj = prj)
+  # build project local environment
+  prj_install_deps(prj = prj)
 
-# lock project environment
-prj_lock_env(prj = prj)
+  # lock project environment
+  prj_lock_env(prj = prj)
 
-# present contents of lock file created
-cat(readLines(file.path(prj$path, "deployment", "env.lock")), sep = "\\n")
-
+  # present contents of lock file created
+  cat(readLines(file.path(prj$path, "deployment", "env.lock")), sep = "\\n")
+}
 }
 \seealso{
 Other in project management: \code{\link{prj_build}},

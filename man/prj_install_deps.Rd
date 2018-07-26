@@ -18,14 +18,14 @@ project for working directory. (type: rsuite_project, default: NULL)}
 \item{vanilla_sups}{if TRUE install only base supportive packages (like devtools & roxygen2).
 (type: logical, default: FALSE)}
 
-\item{relock}{if TRUE allows to update the env.lock file
+\item{relock}{if TRUE allows updating the env.lock file
 (type: logical, default: FALSE)}
 
 \item{check_repos_consistency}{if TRUE will check installed packages if they are
 consistent with required R version (info taken from DESCRIPTION Built field).
-If package is built for different version repository probably contains packages
-not rebuilt for the R version required. If check for target R version fails
-package is removed from local project environment and error is reported that it
+If the package is built for different version repository probably contains packages
+not rebuilt for the R version required. If the check for target R version fails
+the package is removed from the local project environment and error is reported that it
 is not available. (type: logical, default: \code{!grepl("unstable", R.version$status)})}
 }
 \value{
@@ -35,8 +35,9 @@ TRUE if all build successfully.
 Installs project dependencies and needed supportive packages.
 }
 \details{
-Logs all messages from build onto rsuite logger. Use \code{logging::setLevel}
-to control logs verbosity. DEBUG level turns on build and download messages.
+Logs all messages from the building process onto the rsuite logger. Use
+\code{logging::setLevel} to control logs verbosity. DEBUG level turns
+on building and downloading messages.
 }
 \examples{
 \donttest{

@@ -81,7 +81,7 @@ resolve_prj_sups <- function(repo_infos, params, only_source = FALSE, vanilla = 
   project_packages <- build_project_pkgslist(params$pkgs_path) # from 51_pkg_info.R
   prj_sup_vers <- vers.rm(prj_sup_vers, project_packages)
 
-  # remove installed already packages
+  # remove already installed packages
   installed <- get_loadable_packages(vers.get_names(prj_sup_vers),
                                      ex_liblocs = c(params$sbox_path, params$lib_path),
                                      rver = params$r_ver)
@@ -89,7 +89,18 @@ resolve_prj_sups <- function(repo_infos, params, only_source = FALSE, vanilla = 
 
   if (!vers.is_empty(prj_sup_vers)) {
     pkg_logdebug("Resolving support packages (with deps) (for R %s)...", params$r_ver)
-    avail_vers <- resolve_dependencies(prj_sup_vers, repo_infos = repo_infos, pkg_types = pkg_types)
+
+    # prepare additional requirements based on installed packages
+    installed_pkgs <- as.data.frame(utils::installed.packages(lib.loc = params$lib_path),
+                                    stringAsFactors = FALSE)
+    installed_vers <- do.call("vers.union",
+                              by(installed_pkgs, seq_len(nrow(installed_pkgs)),
+                                 FUN = function(pkg) {
+                                   vers.build(pkg$Package, vmin = pkg$Version, vmax = pkg$Version)
+                                 }))
+
+    avail_vers <- resolve_dependencies(prj_sup_vers, repo_infos = repo_infos,
+                                       pkg_types = pkg_types, extra_reqs = installed_vers)
     stopifnot(avail_vers$has_avails())
     return(avail_vers)
   }
@@ -250,7 +261,8 @@ install_support_pkgs <- function(avail_vers, sbox_dir, lib_dir, rver,
               type = "source",
               repos = NULL,
               rver = rver,
-              check_repos_consistency = check_repos_consistency)
+              check_repos_consistency = check_repos_consistency,
+              ex_libpath = lib_dir)
 
   avail_vers <- remove_installed(avail_vers, check_repos_consistency)
   assert(vers.is_empty(avail_vers),
@@ -283,6 +295,21 @@ install_dependencies <- function(avail_vers, lib_dir, rver,
     if (any(check_built_rver)) {
       installed <- installed[majmin_rver(installed$Built) == majmin_rver(rver), ]
     }
+
+    avails <- vers$get_avails()
+    if (nrow(avails) != 0) {
+      missing <- merge(installed, avails, by = c("Package", "Version"))
+      missing <- installed[!installed$Package %in% missing$Package, ]
+
+      if (length(missing$Package) != 0) {
+        pkg_loginfo("The following packages are no longer available in the repository and will be updated: %s",
+                    missing$Package)
+      }
+
+      # remove deprecated packages from installed so they get updated
+      installed <- installed[!installed$Package %in% missing$Package, ]
+    }
+
     return(vers.rm_acceptable(vers, installed))
   }
 
@@ -331,25 +358,31 @@ install_dependencies <- function(avail_vers, lib_dir, rver,
 #'    to resolve dependencies with
 #' @param pkg_types types of packages which are tried for dependencies in order
 #'    to check. (type: character)
+#' @param extra_reqs additional version requirements, those will be used while
+#' checking vers requirements subdependencies. (type: versions, default: NULL)
 #'
 #' @return versions object describing all resolved dependencies.
 #'
 #' @keywords internal
 #' @noRd
 #'
-resolve_dependencies <- function(vers, repo_infos, pkg_types) {
+resolve_dependencies <- function(vers, repo_infos, pkg_types, extra_reqs = NULL) {
   stopifnot(is.versions(vers))
+  stopifnot(is.null(extra_reqs) || is.versions(extra_reqs))
   stopifnot(is.character(pkg_types) && length(pkg_types) >= 1)
+
 
   curr_cr <- check_res.build(missing = vers.rm_base(vers))
   all_deps <- check_res.get_missing(curr_cr)
   while (!setequal(vers.get_names(all_deps), curr_cr$get_found_names())) {
     curr_missings <- vers.rm(all_deps, curr_cr$get_found_names())
-    for (ri in repo_infos) {
+    for (rp in repo_infos) {
       for (tp in pkg_types) {
-          tp_cr <- collect_all_subseq_deps(vers = curr_missings, # from 52_dependencies.R
-                                         repo_info = ri,
-                                         type = tp)
+        tp_cr <- collect_all_subseq_deps(vers = curr_missings, # from 52_dependencies.R
+                                         repo_info = rp,
+                                         type = tp,
+                                         extra_reqs = extra_reqs)
+
         if (!any(vers.get_names(curr_missings) %in% tp_cr$get_found_names())) {
           next
         }
@@ -364,19 +397,11 @@ resolve_dependencies <- function(vers, repo_infos, pkg_types) {
         curr_cr <- check_res.join(tp_cr, curr_cr)
 
         curr_missings <- vers.rm(curr_missings, curr_cr$get_found_names())
-        if (vers.is_empty(curr_missings)) {
-          break
-        }
-      }
-
-      if (vers.is_empty(curr_missings)) {
-        break
       }
     }
-
-    assert(vers.is_empty(curr_missings),
-           "Required dependencies are not available: %s",
-           paste(vers.get_names(curr_missings), collapse = ", "))
+      assert(vers.is_empty(curr_missings),
+             "Required dependencies are not available: %s",
+             paste(vers.get_names(curr_missings), collapse = ", "))
   }
 
   return(check_res.get_found(curr_cr))
@@ -435,7 +460,7 @@ resolve_packages <- function(vers, repo_infos, pkg_types) {
 }
 
 #'
-#' Detects order of installation of packages as permutation of input vector
+#' Detects order of installation of packages as a permutation of the input vector
 #'
 #' @param pkgs vector of package names to permute
 #' @param db data frame of available packages as returned by available.packages
@@ -472,7 +497,7 @@ pkg_inst_order <- function(pkgs, db) {
 }
 
 #'
-#' Cleans installed packages that are not required from project local environment.
+#' Cleans installed packages that are not required from the local project environment.
 #'
 #' @param params project parameters(type: rsuite_project_params)
 #'

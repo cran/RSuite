@@ -10,7 +10,7 @@ repo_manager_destroy(repo_manager)
 \item{repo_manager}{repo adapter object.}
 }
 \description{
-For repositories which needs some kind of connection to manage it cleans up
+For repositories which need some kind of connection to manage it cleans up
 previously initialized connection and releases all appropriate resources.
 }
 \examples{

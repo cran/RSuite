@@ -2,7 +2,7 @@
 % Please edit documentation in R/05_api_pkgzip.R
 \name{pkgzip_build_github_package}
 \alias{pkgzip_build_github_package}
-\title{Builds PKGZIP out of package on GitHub.}
+\title{Builds PKGZIP out of a package on GitHub.}
 \usage{
 pkgzip_build_github_package(repo, ..., prj = NULL,
   pkg_type = .Platform$pkgType, path = getwd(), with_deps = FALSE,
@@ -12,7 +12,7 @@ pkgzip_build_github_package(repo, ..., prj = NULL,
 \item{repo}{repository address in format username/repo[/subdir][\@ref|#pull]. See
 devtools::install_github for more information.}
 
-\item{...}{github specific parameters passed to  \code{devtools::install_github}.}
+\item{...}{GitHub specific parameters passed to  \code{devtools::install_github}.}
 
 \item{prj}{project object to use. If not passed will init project from
 working directory. (type: rsuite_project, default: NULL)}
@@ -36,20 +36,20 @@ If NULL will not filter dependencies. Will be omitted if with_deps is FALSE.
   \item{docs}{Try build documentation with roxygen}
   \item{imps}{Perform imports validation}
   \item{tests}{Run package tests}
-  \item{rcpp_attribs}{Run rppAttribs on package}
+  \item{rcpp_attribs}{Run rppAttribs on the package}
   \item{vignettes}{Build package vignettes}
 }
 (type: character(N), default: NULL).}
 
 \item{keep_sources}{if TRUE downloaded package sources will not be removed
-after build. (type: logical, default: FALSE)}
+after building. (type: logical, default: FALSE)}
 }
 \value{
 created pkgzip file path (invisible).
 }
 \description{
-Loads package from github repository, packages it into package file and builds
-PKGZIP out of it. It uses project to detect repositories to look for dependencies
+Loads package from the GitHub repository, packages it into package file and builds
+a PKGZIP out of it. It uses the project to detect repositories to look for dependencies
 and to detect rversion if required.
 }
 \details{

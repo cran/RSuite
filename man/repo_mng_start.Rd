@@ -2,21 +2,21 @@
 % Please edit documentation in R/04_api_repo.R
 \name{repo_mng_start}
 \alias{repo_mng_start}
-\title{Starts management over repository.}
+\title{Starts management over the repository.}
 \usage{
 repo_mng_start(ra_name, ...)
 }
 \arguments{
-\item{ra_name}{name of repository to re-initialize adapter. (type: character)}
+\item{ra_name}{name of the repository to whose adapter will be re-initialized. (type: character)}
 
 \item{...}{repository specific parameters. See repo_adapter_create_manager
-for concrete implementation of repo adapter for more details.}
+for the concrete implementation of repo adapter for more details.}
 }
 \value{
 repo manager object.
 }
 \description{
-Created object to manage the repository.
+Creates object to manage the repository.
 }
 \examples{
 # create exemplary project base folder
