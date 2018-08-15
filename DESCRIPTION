@@ -1,7 +1,7 @@
 Package: RSuite
 Type: Package
 Title: Supports Developing, Building and Deploying R Solution
-Version: 0.31-243
+Version: 0.32-244
 Authors@R: c( person("Walerian", "Sokolowski", email =
         "rsuite@wlogsolutions.com", role = c("aut", "cre")),
         person("Wit", "Jakuczun", email =
@@ -28,7 +28,7 @@ Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2018-07-26 15:39:11 UTC; ws171913
+Packaged: 2018-08-15 13:01:51 UTC; ws171913
 Author: Walerian Sokolowski [aut, cre],
   Wit Jakuczun [aut],
   Yulia Yakimechko [aut],
@@ -38,4 +38,4 @@ Author: Walerian Sokolowski [aut, cre],
   R Consortium [ctb] (Definitions of system requirements are taken from
     sysreqsdb project.)
 Repository: CRAN
-Date/Publication: 2018-07-26 16:10:08 UTC
+Date/Publication: 2018-08-15 13:50:06 UTC

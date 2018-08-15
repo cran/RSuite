@@ -1,10 +1,26 @@
+# RSuite 0.32 (2018-08-15)
+  * Unregistering repo adapters functionality added.
+  * Dependency resolving when using multiple repos. Previously if a subdependency
+    was present in a preceding repository R Suite was unable to find it.
+  * rsuite_get_os_info added to retrieve OS release/version etc.
+  * SunOS is supported.
+  * Changed logic when passing template as filepath, it caused issues when creating
+    a project/package from a registered template and a directory with the same name was
+    present in the working directory. If we want to use a template that is present in
+    the working directory we have to like this "./<name_of_template>"
+  * Merged tmpl_prjadd, tmpl_pkgadd into tmpl_start previously the user had to create both of those
+    components separately. Now the user creates a full template using tmpl_start, but it is possible
+    to skip project or package template creation by using specific flags: skip_prj, skip_pkg
+  * Git RC adapter updates: detection of git2r version and using proper head retrieval function,
+    fix handling of s4 classes
+
 # RSuite 0.31 (2018-07-26)
   * Handling of old (not available in currently selected repositories) packages
      (and their versions). They are reinstalled. Versions of packages to install
      in sandbox are detected to conform with packages installed in project env.
   * Fedora platform version detection fixed.
   * New template tag added (__LatestMRAN__) which is expanded to latest available
-     MRAN snapshot specification. RSuite searchs from NOW 14 days back checking 
+     MRAN snapshot specification. RSuite searches from NOW 14 days back checking 
      day by day if snapshot is available. This is required due to some days 
      (e.g 2018-07-18) are not available at all.
   * NAMESPACE validation fixed: it supports both import and importFrom clauses.

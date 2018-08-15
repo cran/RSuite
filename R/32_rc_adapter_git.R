@@ -183,7 +183,13 @@ rc_adapter_get_version.rsuite_rc_adapter_git <- function(rc_adapter, dir) {
   st <- git2r::status(repo)
 
   # detect head target
-  head_branch <- git2r::head(repo)
+  # in git2r > 0.21.0 head is depricated and cause warning: repository_head should be used
+  # in earlier versions repository_head is not available and check will complain if referencing it directly
+  head_branch <- if (utils::compareVersion(utils::packageVersion("git2r"), "0.21.0") > 0) {
+    get_pkg_intern("git2r", "repository_head") # from 99_rpatches.R
+  } else {
+    git2r::head(repo)
+  }
   head_target <- git2r::branch_target(head_branch)
 
   # detect if HEAD commit is tagged
@@ -192,9 +198,9 @@ rc_adapter_get_version.rsuite_rc_adapter_git <- function(rc_adapter, dir) {
 
   tag_target <- function(act_tag) {
     if (class(act_tag) == "git_tag") {
-      return(act_tag@target)
+      return(ifelse(isS4(act_tag), act_tag@target, act_tag$target))
     } else {
-      return(act_tag@sha)
+      return(ifelse(isS4(act_tag), act_tag@sha, act_tag$sha))
     }
   }
   head_tag <- names(repo_tags)[vapply(X = repo_tags,
@@ -206,7 +212,19 @@ rc_adapter_get_version.rsuite_rc_adapter_git <- function(rc_adapter, dir) {
   # detect if working copy needs update
   diff_working_tree <- git2r::diff(repo, index = FALSE)
   diff_head <- git2r::diff(repo, index = TRUE)
-  needs_update <- length(diff_working_tree@files) + length(diff_head@files) > 0
+
+  diff_working_tree_files <- if (isS4(diff_working_tree)) {
+    diff_working_tree@files
+  } else {
+    diff_working_tree$files
+  }
+  diff_head_files <- if (isS4(diff_head)) {
+    diff_head@files
+  } else {
+    diff_head$files
+  }
+
+  needs_update <- length(diff_working_tree_files) + length(diff_head_files) > 0
 
   return(list(
     has_changes = length(st$staged) + length(st$untracked) + length(st$unstaged) > 0,

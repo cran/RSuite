@@ -20,11 +20,11 @@
 #' @family in templates management
 #'
 #' @examples
-#' tmpl_get_registered()
+#' tmpl_list_registered()
 #'
 #' @export
 #'
-tmpl_get_registered <- function() {
+tmpl_list_registered <- function() {
   templ_base_dirs <- c()
 
   # look for templates in the local user's environment
@@ -65,35 +65,33 @@ tmpl_get_registered <- function() {
 
 
 #'
-#' Creates a new project template with the specified name, in the specified path.
+#' Creates a new template with the specified name, in the specified path.
 #'
 #' @details
 #' Project templates are required to include a PARAMETERS file
+#' whereas package templates are required to include a DESCRIPTION file
 #'
 #' If there is no path argument provided. The function will create the
-#' template in the default template folder in the user's local environment
+#' template in working directory.
 #'
 #' @param name name of the template being created. (type: character(1))
 #'
 #' @param path path to the directory where the template should be created. If
-#'   NULL will use the folder with user template. (type: character(1), default: NULL)
+#'   NULL will use the folder with user template. (type: character(1), default: getwd())
+#'
+#' @param add_prj if TRUE include project template to the template directory
+#'
+#' @param add_pkg if TRUE include package template in the template directory
 #'
 #' @family in templates management
 #'
 #' @examples
-#' tmpl_dir <- tempfile("prjtempl_")
-#' tmpl_start_prj(basename(tmpl_dir), path = tempdir())
+#' tmpl_dir <- tempfile("templ_")
+#' tmpl_start(basename(tmpl_dir), path = tempdir())
 #'
 #' @export
 #'
-tmpl_start_prj <- function(name, path = NULL) {
-  if (is.null(path)) {
-    path <- get_user_templ_base_dir(create = TRUE) # from 58_templates.R
-    assert(!is.null(path),
-           paste0("User template folder is not specified.",
-                  " Please set the rsuite.user_templ_path option to point to the folder containing user templates"))
-  }
-
+tmpl_start <- function(name, path = getwd(), add_prj = TRUE, add_pkg = TRUE) {
   assert(is.character(path) && length(path) == 1, "character(1) expected for path")
   assert(dir.exists(path), "Directory %s does not exists", path)
   assert(file.access(path, mode = 2) == 0, "User has no write permission to %s", path)
@@ -113,85 +111,40 @@ tmpl_start_prj <- function(name, path = NULL) {
     assert(success, "Failed to create directory %s", tmpl_path)
   }
 
-  # finally create project template
-  prj_tmpl_path <- file.path(path, name, "project")
-  assert(!dir.exists(prj_tmpl_path), "%s template already exists.", prj_tmpl_path)
+  # finally create templates
+  # create project template
+  if (add_prj) {
+    prj_tmpl_path <- file.path(tmpl_path, "project")
+    assert(!dir.exists(prj_tmpl_path), "%s template already exists.", prj_tmpl_path)
 
-  builtin_temp <- get_builtin_templs_temp_base() # from 58_templates.R
-  on.exit({
-    unlink(builtin_temp, recursive = TRUE, force = TRUE)
-  },
-  add = TRUE)
+    builtin_temp <- get_builtin_templs_temp_base() # from 58_templates.R
+    on.exit({
+      unlink(builtin_temp, recursive = TRUE, force = TRUE)
+    },
+    add = TRUE)
 
-  builtin_prj_template <- file.path(builtin_temp, "project")
-  success <- copy_folder(builtin_prj_template, prj_tmpl_path) # from 98_shell.R
-  assert(success, "Failed to create template at %s", prj_tmpl_path)
-
-  pkg_loginfo("%s template was created successfully", name)
-}
-
-
-#'
-#' Creates a new package template with the specified name, in the specified path.
-#'
-#' @details
-#' Package templates are required to include a DESCRIPTION file
-#'
-#' If there is no path argument provided. The function will create the
-#' template in the default template folder in the user's local environment
-#'
-#' @family in templates management
-#'
-#' @param name name of the template being created. (type: character(1))
-#'
-#' @param path path to the directory where the template should be created. If
-#'   NULL will use the folder with user template. (type: character(1), default: NULL)
-#'
-#' @examples
-#' tmpl_dir <- tempfile("pkgtempl_")
-#' tmpl_start_pkg(basename(tmpl_dir), path = tempdir())
-#'
-#' @export
-#'
-tmpl_start_pkg <- function(name, path = NULL) {
-  if (is.null(path)) {
-    path <- get_user_templ_base_dir(create = TRUE) # from 58_templates.R
-    assert(!is.null(path),
-           paste0("User template folder is not specified.",
-                  " Please set the rsuite.user_templ_path option to point to the folder containing user templates"))
+    builtin_prj_template <- file.path(builtin_temp, "project")
+    success <- copy_folder(builtin_prj_template, prj_tmpl_path) # from 98_shell.R
+    assert(success, "Failed to create template at %s", prj_tmpl_path)
+    pkg_loginfo("%s project template was created successfully", name)
   }
 
-  assert(is.character(path) && length(path) == 1, "character(1) expected for path")
-  assert(dir.exists(path), "Directory %s does not exist", path)
-  assert(file.access(path, mode = 2) == 0, "User has no write permission to %s.", path)
+  # create package template
+  if (add_pkg) {
+    pkg_tmpl_path <- file.path(tmpl_path, "package")
+    assert(!dir.exists(pkg_tmpl_path), "%s folder already exists.", pkg_tmpl_path)
 
-  assert(!missing(name), "Template name is required")
-  assert(is.character(name) && length(name) == 1 && nchar(name) > 0,
-         "Non empty character(1) expected for name")
-  assert(!grepl("[\\/\"\'<> ]+", name),
-         "Invalid template name '%s'. It must not contain special characters", name)
+    builtin_temp <- get_builtin_templs_temp_base() # from 58_templates.R
+    on.exit({
+      unlink(builtin_temp, recursive = TRUE, force = TRUE)
+    },
+    add = TRUE)
 
-  path <- normalizePath(path, winslash = "/")
-
-  # create template directory
-  tmpl_path <- file.path(path, name)
-  if (!dir.exists(tmpl_path)) {
-    success <- dir.create(tmpl_path, recursive = TRUE)
-    assert(success, "Failed to create directory %s", tmpl_path)
+    builtin_pkg_template <- file.path(builtin_temp, "package")
+    success <- copy_folder(builtin_pkg_template, pkg_tmpl_path) # from 98_shell.R
+    assert(success, "Failed to create template at %s", pkg_tmpl_path)
+    pkg_loginfo("%s package template was created successfully", name)
   }
-
-  pkg_tmpl_path <- file.path(path, name, "package")
-  assert(!dir.exists(pkg_tmpl_path), "%s folder already exists.", pkg_tmpl_path)
-
-  builtin_temp <- get_builtin_templs_temp_base() # from 58_templates.R
-  on.exit({
-    unlink(builtin_temp, recursive = TRUE, force = TRUE)
-  },
-  add = TRUE)
-
-  builtin_pkg_template <- file.path(builtin_temp, "package")
-  success <- copy_folder(builtin_pkg_template, pkg_tmpl_path) # from 98_shell.R
-  assert(success, "Failed to create template at %s", pkg_tmpl_path)
 
   pkg_loginfo("%s template was created successfully", name)
 }
@@ -233,8 +186,7 @@ tmpl_start_pkg <- function(name, path = NULL) {
 #'   unlink(user_templ, recursive = TRUE, force = TRUE)
 #' }, add = TRUE)
 #'
-#' tmpl_start_prj(basename(user_templ), path = tempdir())
-#' tmpl_start_pkg(basename(user_templ), path = tempdir())
+#' tmpl_start(basename(user_templ), path = tempdir())
 #' tmpl_register(user_templ)
 #'
 #' @export
@@ -243,12 +195,17 @@ tmpl_register <- function(path = NULL, global = FALSE) {
   assert(!is.null(path), "No template path specified.")
   assert(dir.exists(path), "Directory %s does not exist.", path)
 
+  path <- rsuite_fullUnifiedPath(path, short = FALSE)
   if (global) {
     tmpl_dir <- get_global_templ_dir()
     assert(!is.null(tmpl_dir), "Global template directory error.")
   } else{
     tmpl_dir <- get_user_templ_base_dir(create = TRUE) # from 58_templates.R
     assert(!is.null(tmpl_dir), "Local templates directory is not defined(rsuite.user_templ_path)")
+  }
+
+  if (dir.exists(file.path(tmpl_dir, basename(path)))) {
+    pkg_loginfo("Overwriting existing template: %s", basename(path))
   }
 
   success <- file.copy(from = path, to = tmpl_dir, recursive = TRUE) # from 14_setup_structure.R

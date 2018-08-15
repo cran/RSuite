@@ -130,6 +130,30 @@ rsuite_register_repo_adapter <- function(repo_adapter) {
 }
 
 #'
+#' Unegisters repository adapter.
+#'
+#' @param repo_adapter_name name of the repo adapter to unregister. (type: character(1))
+#'
+#' @family miscellaneous
+#'
+#' @examples
+#' \donttest{
+#'   repo_adapter <- repo_adapter_create_base("Own") # create your custom adapter
+#'   class(repo_adapter) <- c("repo_adapter_own", class(repo_adapter))
+#'   rsuite_register_repo_adapter(repo_adapter)
+#'   rsuite_unregister_repo_adapter("Own")
+#' }
+#'
+#' @export
+#'
+rsuite_unregister_repo_adapter <- function(repo_adapter_name) {
+  assert(!is.null(find_repo_adapter(repo_adapter_name)),
+         "Repo adapter '%s' is not registered", repo_adapter_name)
+
+  unreg_repo_adapter(repo_adapter_name)
+}
+
+#'
 #' Gets all names of known repository adapters.
 #'
 #' @return names of registered repository management adapters as character vector.
@@ -214,4 +238,27 @@ rsuite_unregister_rc_adapter <- function(name) {
 #'
 rsuite_get_rc_adapter_names <- function() {
   reg_rc_adapter_names()
+}
+
+#'
+#' Retrieves information on current OS.
+#'
+#' @return named list with following items
+#' \describe{
+#'   \item{type}{One of windows, macos, unix. (type: character)}
+#'   \item{platform}{One of Windows, MacOS, SunOS, RedHat, Debian. (type: character(1))}
+#'   \item{release}{One of Solaris, MacOS, Ubuntu, Debian, Fedora, CentOS or RedHat or NA. (type: character(1))}
+#'   \item{distrib}{Distribution release e.g. for Debian: squeeze, wheezy, jessie. (type: character(1))}
+#'   \item{version}{Version number of the distribution. (type: character(1))}
+#' }
+#'
+#' @family miscellaneous
+#'
+#' @examples
+#' rsuite_get_os_info()
+#'
+#' @export
+#'
+rsuite_get_os_info <- function() {
+  get_os_info() # from 98_shell.R
 }

@@ -41,18 +41,19 @@ on.exit({
   unlink(user_templ, recursive = TRUE, force = TRUE)
 }, add = TRUE)
 
-tmpl_start_prj(basename(user_templ), path = tempdir())
-tmpl_start_pkg(basename(user_templ), path = tempdir())
+tmpl_start(basename(user_templ), path = tempdir())
 tmpl_register(user_templ)
 
 }
 \seealso{
 Other miscellaneous: \code{\link{rsuite_check_version}},
   \code{\link{rsuite_getLogger}},
+  \code{\link{rsuite_get_os_info}},
   \code{\link{rsuite_get_rc_adapter_names}},
   \code{\link{rsuite_get_repo_adapter_names}},
   \code{\link{rsuite_register_rc_adapter}},
   \code{\link{rsuite_register_repo_adapter}},
   \code{\link{rsuite_unregister_rc_adapter}},
+  \code{\link{rsuite_unregister_repo_adapter}},
   \code{\link{rsuite_update}}
 }

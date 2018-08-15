@@ -90,6 +90,7 @@ and use it to update an internal CRAN-like repository which has no access to the
   \item{\code{\link{rsuite_unregister_rc_adapter}}}{Unregisters RC (revision control) adapter.}
   \item{\code{\link{rsuite_get_rc_adapter_names}}}{Gets all names of known RC (revision control) adapters.}
   \item{\code{\link{rsuite_getLogger}}}{Retrieves RSuite logger.}
+  \item{\code{\link{rsuite_get_os_info}}}{Retrieves information on current OS.}
 }
 }
 
@@ -100,9 +101,8 @@ you to create a project and package templates, register them in the
 local or global template directory and list all registered templates.
 
 \describe{
-  \item{\code{\link{tmpl_get_registered}}}{Lists all registered templates}
-  \item{\code{\link{tmpl_start_prj}}}{Creates a project template.}
-  \item{\code{\link{tmpl_start_pkg}}}{Creates a package template.}
+  \item{\code{\link{tmpl_start}}}{Creates a new template.}
+  \item{\code{\link{tmpl_list_registered}}}{Lists all registered templates}
   \item{\code{\link{tmpl_register}}}{Registers a template.}
 }
 }
