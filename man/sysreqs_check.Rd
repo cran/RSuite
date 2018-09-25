@@ -14,7 +14,7 @@ from the working directory if no default project exists.
 }
 \description{
 Collects system requirements with \code{\link{sysreqs_collect}}
-and performs checks for their existence. Fill fail if some system
+and performs checks for their existence. Will fail if some system
 requirements are not satisfied.
 }
 \examples{

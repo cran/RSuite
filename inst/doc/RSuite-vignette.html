@@ -220,7 +220,7 @@ hr {
 <p>If you are stuck feel free to contact us:</p>
 
 <ul>
-<li>through the R Suite website (<a href="http://rsuite.io#contact">http://rsuite.io#contact</a>) or </li>
+<li>through the R Suite website (<a href="https://rsuite.io#contact">https://rsuite.io#contact</a>) or </li>
 <li>using Gitter <a href="https://gitter.im/WLOGSolutions/RSuite" title="Gitter R Suite room">R Suite room</a></li>
 <li>directly by sending an email with the description of your problem to
 <a href="mailto:rsuite@wlogsolutions.com">rsuite@wlogsolutions.com</a>.</li>
@@ -241,9 +241,9 @@ later usage and content index of used repositories.<br/></li>
 <p>To create a new project (called <code>my_project</code>) we have to call the following function:</p>
 
 <pre><code class="r">RSuite::prj_start(name = &#39;my_project&#39;)
-#&gt;  2018-08-15 15:00:40 INFO:rsuite:Project my_project has structure compliant with current version of RSuite(v0.32).
-#&gt;  2018-08-15 15:00:40 INFO:rsuite:Project my_project started.
-#&gt;  2018-08-15 15:00:40 WARNING:rsuite:Failed to detect RC manager for my_project
+#&gt;  2018-09-25 17:21:07 INFO:rsuite:Project my_project has structure compliant with current version of RSuite(v0.32).
+#&gt;  2018-09-25 17:21:07 INFO:rsuite:Project my_project started.
+#&gt;  2018-09-25 17:21:07 WARNING:rsuite:Failed to detect RC manager for my_project
 </code></pre>
 
 <p>The RSuite project is being created in folder not under git/svn control. This is the cause of warning you can see
@@ -311,7 +311,7 @@ print(&quot;master.R sourced successfully.&quot;)
 <p>R Suite forces the users to keep logic in packages. To create a package (called <code>mypackage</code>) call the following function:</p>
 
 <pre><code class="r">RSuite::prj_start_package(name = &quot;mypackage&quot;, skip_rc = TRUE)
-#&gt;  2018-08-15 15:00:40 INFO:rsuite:Package mypackage started in project my_project.
+#&gt;  2018-09-25 17:21:07 INFO:rsuite:Package mypackage started in project my_project.
 </code></pre>
 
 <h2>Add custom package to master script</h2>
@@ -353,8 +353,8 @@ library(mypackage)
 <p>Adding a package to the project is not enough to use it. You have to build it. You can do this by calling the following function:</p>
 
 <pre><code class="r">RSuite::prj_build()
-#&gt;  2018-08-15 15:00:40 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2018-08-15 15:00:46 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2018-09-25 17:21:08 INFO:rsuite:Installing mypackage (for R 3.3) ...
+#&gt;  2018-09-25 17:21:13 INFO:rsuite:Successfuly installed 1 packages
 </code></pre>
 
 <p>Now you can check if your master script has access to the package <code>mypackage</code></p>
@@ -417,8 +417,8 @@ hello_world(&quot;John&quot;)
 <p>You have to rebuild packages to have all the functionality available to master scripts. You do it with the following function call.</p>
 
 <pre><code class="r">RSuite::prj_build()
-#&gt;  2018-08-15 15:00:46 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2018-08-15 15:00:52 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2018-09-25 17:21:13 INFO:rsuite:Installing mypackage (for R 3.3) ...
+#&gt;  2018-09-25 17:21:19 INFO:rsuite:Successfuly installed 1 packages
 </code></pre>
 
 <p>And check if <code>R/master.R</code> works:</p>
@@ -442,7 +442,7 @@ hello_world(&quot;John&quot;)
 Type: Package
 Title: What the package does (short line)
 Version: 0.1
-Date: 2018-08-15
+Date: 2018-09-25
 Author: ws171913
 Maintainer: Who to complain to &lt;yourfault@somewhere.net&gt;
 Description: More about what it does (maybe more than one line)
@@ -457,7 +457,7 @@ Depends: data.table (&gt;= 1.10.1)
 <p>Lets rebuild package to have master scripts see the changes:</p>
 
 <pre><code class="r">RSuite::prj_build()
-#&gt;  2018-08-15 15:00:52 ERROR:rsuite:Some dependencies are not installed in project env: data.table.Please, install dependencies(Call RSuite::prj_install_deps)
+#&gt;  2018-09-25 17:21:19 ERROR:rsuite:Some dependencies are not installed in project env: data.table.Please, install dependencies(Call RSuite::prj_install_deps)
 #&gt;  Error: Some dependencies are not installed in project env: data.table.Please, install dependencies(Call RSuite::prj_install_deps)
 </code></pre>
 
@@ -468,15 +468,14 @@ Depends: data.table (&gt;= 1.10.1)
 <p>To install dependencies you have to call the following function:</p>
 
 <pre><code class="r">RSuite::prj_install_deps()
-#&gt;  2018-08-15 15:00:52 INFO:rsuite:Detecting repositories (for R 3.3)...
-#&gt;  2018-08-15 15:01:01 INFO:rsuite:Will look for dependencies in ...
-#&gt;  2018-08-15 15:01:01 INFO:rsuite:.          MRAN#1 = https://mran.microsoft.com/snapshot/2018-08-15 (win.binary, source)
-#&gt;  2018-08-15 15:01:01 INFO:rsuite:Collecting project dependencies (for R 3.3)...
-#&gt;  2018-08-15 15:01:01 INFO:rsuite:Resolving dependencies (for R 3.3)...
-#&gt;  2018-08-15 15:01:02 INFO:rsuite:The following packages are no longer available in the repository and will be updated: mypackage
-#&gt;  2018-08-15 15:01:02 INFO:rsuite:Detected 1 dependencies to install. Installing...
-#&gt;  2018-08-15 15:01:14 INFO:rsuite:The following packages are no longer available in the repository and will be updated: logging,mypackage
-#&gt;  2018-08-15 15:01:14 INFO:rsuite:All dependencies successfully installed.
+#&gt;  2018-09-25 17:21:19 INFO:rsuite:Detecting repositories (for R 3.3)...
+#&gt;  2018-09-25 17:21:24 INFO:rsuite:Will look for dependencies in ...
+#&gt;  2018-09-25 17:21:24 INFO:rsuite:.          MRAN#1 = https://mran.microsoft.com/snapshot/2018-09-25 (win.binary, source)
+#&gt;  2018-09-25 17:21:24 INFO:rsuite:Collecting project dependencies (for R 3.3)...
+#&gt;  2018-09-25 17:21:24 INFO:rsuite:Resolving dependencies (for R 3.3)...
+#&gt;  2018-09-25 17:21:25 INFO:rsuite:Following installed packages will be updated: mypackage
+#&gt;  2018-09-25 17:21:25 INFO:rsuite:Detected 1 dependencies to install. Installing...
+#&gt;  2018-09-25 17:21:32 INFO:rsuite:All dependencies successfully installed.
 </code></pre>
 
 <p>From this output you can see that we use <code>MRAN</code> as our package repository. Moreover R Suite detected 1 dependency to be installed.</p>
@@ -484,8 +483,8 @@ Depends: data.table (&gt;= 1.10.1)
 <p>You can check if installation succeeded by calling the following function:</p>
 
 <pre><code class="r">RSuite::prj_build()
-#&gt;  2018-08-15 15:01:15 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2018-08-15 15:01:21 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2018-09-25 17:21:34 INFO:rsuite:Installing mypackage (for R 3.3) ...
+#&gt;  2018-09-25 17:21:40 INFO:rsuite:Successfuly installed 1 packages
 </code></pre>
 
 <p>Lets check what happens if you run our master script</p>
@@ -558,9 +557,9 @@ logerror(&quot;Master error&quot;)
 <p>Lets check how it works</p>
 
 <pre><code class="r">source(&#39;R/master.R&#39;)
-#&gt;  2018-08-15 15:01:22 INFO::Master info
-#&gt;  2018-08-15 15:01:22 WARNING::Master warning
-#&gt;  2018-08-15 15:01:22 ERROR::Master error
+#&gt;  2018-09-25 17:21:40 INFO::Master info
+#&gt;  2018-09-25 17:21:40 WARNING::Master warning
+#&gt;  2018-09-25 17:21:40 ERROR::Master error
 </code></pre>
 
 <p>As you can see there are logging messages. You can see that debug message is missing as by default logging level is set to present only messages on <code>INFO</code> and higher levels.</p>
@@ -575,9 +574,9 @@ logerror(&quot;Master error&quot;)
 <p>Lets check how it works</p>
 
 <pre><code class="r">source(&#39;R/master.R&#39;)
-#&gt;  2018-08-15 15:01:22 INFO::Master info
-#&gt;  2018-08-15 15:01:22 WARNING::Master warning
-#&gt;  2018-08-15 15:01:22 ERROR::Master error
+#&gt;  2018-09-25 17:21:40 INFO::Master info
+#&gt;  2018-09-25 17:21:40 WARNING::Master warning
+#&gt;  2018-09-25 17:21:40 ERROR::Master error
 </code></pre>
 
 <p>As you can see now debug logging message is printed.</p>
@@ -587,18 +586,18 @@ logerror(&quot;Master error&quot;)
 <p>Logging messages are stored in logs folder in files named with current date. You can check this by issuing a command</p>
 
 <pre><code class="r">list.files(path = &quot;./logs&quot;)
-#&gt;  [1] &quot;2018_08_15.log&quot;
+#&gt;  [1] &quot;2018_09_25.log&quot;
 </code></pre>
 
 <p>When you open this log in an editor you should see content similar to this</p>
 
-<pre><code>#&gt;  2018-08-15 15:01:22 DEBUG::Master debug
-#&gt;  2018-08-15 15:01:22 WARNING::Master warning
-#&gt;  2018-08-15 15:01:22 ERROR::Master error
-#&gt;  2018-08-15 15:01:22 INFO::Master info
-#&gt;  2018-08-15 15:01:22 DEBUG::Master debug
-#&gt;  2018-08-15 15:01:22 WARNING::Master warning
-#&gt;  2018-08-15 15:01:22 ERROR::Master error
+<pre><code>#&gt;  2018-09-25 17:21:40 DEBUG::Master debug
+#&gt;  2018-09-25 17:21:40 WARNING::Master warning
+#&gt;  2018-09-25 17:21:40 ERROR::Master error
+#&gt;  2018-09-25 17:21:40 INFO::Master info
+#&gt;  2018-09-25 17:21:40 DEBUG::Master debug
+#&gt;  2018-09-25 17:21:40 WARNING::Master warning
+#&gt;  2018-09-25 17:21:40 ERROR::Master error
 </code></pre>
 
 <p>As you can see this is very similar to the output you saw in console.</p>
@@ -623,9 +622,9 @@ hello_world &lt;- function(name) {
 <pre><code class="r">devtools::load_all(&quot;packages/mypackage&quot;)
 #&gt;  Loading mypackage
 hello_world(&quot;John&quot;)
-#&gt;  2018-08-15 15:01:22 INFO:mypackage:Package info
-#&gt;  2018-08-15 15:01:22 WARNING:mypackage:Package warning
-#&gt;  2018-08-15 15:01:22 ERROR:mypackage:Package error
+#&gt;  2018-09-25 17:21:41 INFO:mypackage:Package info
+#&gt;  2018-09-25 17:21:41 WARNING:mypackage:Package warning
+#&gt;  2018-09-25 17:21:41 ERROR:mypackage:Package error
 #&gt;  [1] &quot;Hello John! Good to see you again.&quot;
 </code></pre>
 
@@ -641,8 +640,7 @@ hello_world(&quot;John&quot;)
 <p>RSuite allows the user to lock the project environment. It collects all dependencies&#39; versions and stores them in a lock file to enforce exact dependency versions in the future. To lock the project environment we have to call the following function:</p>
 
 <pre><code class="r">RSuite::prj_lock_env()
-#&gt;  2018-08-15 15:01:23 INFO:rsuite:The project environment was locked successfully
-#&gt;  2018-08-15 15:01:23 INFO:rsuite:Project environment has been locked
+#&gt;  2018-09-25 17:21:41 INFO:rsuite:The project environment was locked successfully
 </code></pre>
 
 <p>The lock file is in the &#39;deployment&#39; directory under the &#39;env.lock&#39; name. It is a dcf file that stores information about packages in the local environment together with their versions. A sample record from the &#39;env.lock&#39; file is presented below:</p>
@@ -653,6 +651,9 @@ hello_world(&quot;John&quot;)
 #&gt;  
 #&gt;  Package: logging
 #&gt;  Version: 0.7-103
+#&gt;  
+#&gt;  Package: mypackage
+#&gt;  Version: 0.1
 </code></pre>
 
 <p>When dependencies are being installed using <code>RSuite::prj_install_deps()</code> the &#39;env.lock&#39; file will be used to detect whether any package will change versions. If that&#39;s the case an appropriate warning message will be displayed. The feature allows to safely deploy packages with specific dependencies&#39; versions. It prevent errors caused by newer versions of packages which might work differently than previous ones used in the project. </p>
@@ -660,7 +661,7 @@ hello_world(&quot;John&quot;)
 <p>To safely unlock the local project environment we use the following function:</p>
 
 <pre><code class="r">RSuite::prj_unlock_env()
-#&gt;  2018-08-15 15:01:23 INFO:rsuite:The project environment has been unlocked.
+#&gt;  2018-09-25 17:21:41 INFO:rsuite:The project environment has been unlocked.
 </code></pre>
 
 <p>The function deletes an existing &#39;env.lock&#39; file.</p>
@@ -695,13 +696,13 @@ hello_world(&quot;John&quot;)
 <p>Now lets check that all project dependencies have been collected:</p>
 
 <pre><code class="r">RSuite::prj_install_deps()
-#&gt;  2018-08-15 15:01:23 INFO:rsuite:Detecting repositories (for R 3.3)...
-#&gt;  2018-08-15 15:01:23 INFO:rsuite:Will look for dependencies in ...
-#&gt;  2018-08-15 15:01:23 INFO:rsuite:.          MRAN#1 = https://mran.microsoft.com/snapshot/2018-08-15 (win.binary, source)
-#&gt;  2018-08-15 15:01:23 INFO:rsuite:Collecting project dependencies (for R 3.3)...
-#&gt;  2018-08-15 15:01:23 INFO:rsuite:Resolving dependencies (for R 3.3)...
-#&gt;  2018-08-15 15:01:24 INFO:rsuite:The following packages are no longer available in the repository and will be updated: mypackage
-#&gt;  2018-08-15 15:01:24 INFO:rsuite:No dependencies to install.
+#&gt;  2018-09-25 17:21:41 INFO:rsuite:Detecting repositories (for R 3.3)...
+#&gt;  2018-09-25 17:21:41 INFO:rsuite:Will look for dependencies in ...
+#&gt;  2018-09-25 17:21:41 INFO:rsuite:.          MRAN#1 = https://mran.microsoft.com/snapshot/2018-09-25 (win.binary, source)
+#&gt;  2018-09-25 17:21:41 INFO:rsuite:Collecting project dependencies (for R 3.3)...
+#&gt;  2018-09-25 17:21:41 INFO:rsuite:Resolving dependencies (for R 3.3)...
+#&gt;  2018-09-25 17:21:43 INFO:rsuite:Following installed packages will be updated: mypackage
+#&gt;  2018-09-25 17:21:43 INFO:rsuite:No dependencies to install.
 </code></pre>
 
 <p>As you did not add any new dependencies R Suite smartly understands it and does not repeat lengthy dependencies installation phase.</p>
@@ -709,19 +710,19 @@ hello_world(&quot;John&quot;)
 <p>Lets rebuild our custom packages:</p>
 
 <pre><code class="r">RSuite::prj_build()
-#&gt;  2018-08-15 15:01:25 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2018-08-15 15:01:31 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2018-09-25 17:21:44 INFO:rsuite:Installing mypackage (for R 3.3) ...
+#&gt;  2018-09-25 17:21:51 INFO:rsuite:Successfuly installed 1 packages
 </code></pre>
 
 <p>To build a deployment package you use the following function (we specify there to put the deployment package with <code>path</code> argument):</p>
 
 <pre><code class="r">RSuite::prj_zip(path = tempdir())
-#&gt;  2018-08-15 15:01:31 WARNING:rsuite:Project environment is not locked!
-#&gt;  2018-08-15 15:01:31 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2018-08-15 15:01:37 INFO:rsuite:Successfuly installed 1 packages
-#&gt;  2018-08-15 15:01:37 INFO:rsuite:Preparing files for zipping...
-#&gt;  2018-08-15 15:01:38 INFO:rsuite:... done. Creating zip file my_project_0.1x.zip ...
-#&gt;  2018-08-15 15:01:39 INFO:rsuite:Zip file created: C:\Users\ws171913\AppData\Local\Temp\RtmpO4dbdM/my_project_0.1x.zip
+#&gt;  2018-09-25 17:21:51 WARNING:rsuite:Project environment is not locked!
+#&gt;  2018-09-25 17:21:51 INFO:rsuite:Installing mypackage (for R 3.3) ...
+#&gt;  2018-09-25 17:21:58 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2018-09-25 17:21:58 INFO:rsuite:Preparing files for zipping...
+#&gt;  2018-09-25 17:21:58 INFO:rsuite:... done. Creating zip file my_project_0.1x.zip ...
+#&gt;  2018-09-25 17:21:59 INFO:rsuite:Zip file created: C:\Users\ws171913\AppData\Local\Temp\RtmpeUlWV1/my_project_0.1x.zip
 </code></pre>
 
 <p>As project is not under version control and contains only one package R Suite chooses default version for the deployment
@@ -734,12 +735,12 @@ deployment package is versioned by source code tag (tag under Git or revision nu
 prevents building deployment package unless you enforce deployment package version explicitly:</p>
 
 <pre><code class="r">RSuite::prj_zip(path = tempdir(), zip_ver = &#39;1.0&#39;)
-#&gt;  2018-08-15 15:01:39 WARNING:rsuite:Project environment is not locked!
-#&gt;  2018-08-15 15:01:39 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2018-08-15 15:01:45 INFO:rsuite:Successfuly installed 1 packages
-#&gt;  2018-08-15 15:01:45 INFO:rsuite:Preparing files for zipping...
-#&gt;  2018-08-15 15:01:45 INFO:rsuite:... done. Creating zip file my_project_1.0x.zip ...
-#&gt;  2018-08-15 15:01:46 INFO:rsuite:Zip file created: C:\Users\ws171913\AppData\Local\Temp\RtmpO4dbdM/my_project_1.0x.zip
+#&gt;  2018-09-25 17:21:59 WARNING:rsuite:Project environment is not locked!
+#&gt;  2018-09-25 17:21:59 INFO:rsuite:Installing mypackage (for R 3.3) ...
+#&gt;  2018-09-25 17:22:06 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2018-09-25 17:22:06 INFO:rsuite:Preparing files for zipping...
+#&gt;  2018-09-25 17:22:06 INFO:rsuite:... done. Creating zip file my_project_1.0x.zip ...
+#&gt;  2018-09-25 17:22:07 INFO:rsuite:Zip file created: C:\Users\ws171913\AppData\Local\Temp\RtmpeUlWV1/my_project_1.0x.zip
 </code></pre>
 
 <p>You have created file <code>my_project_1.0x.zip</code> that contains all information necessary to run your solution on a production environment.</p>
@@ -771,9 +772,9 @@ cat(list.files(path = file.path(tempdir(), &quot;prod&quot;, &quot;my_project&qu
                   args = file.path(tempdir(), &quot;prod&quot;, &quot;my_project&quot;, &quot;R&quot;, &quot;master.R&quot;),
                   stdout = TRUE)
 cat(output, sep = &quot;\n&quot;)
-#&gt;  2018-08-15 15:01:47 INFO:mypackage:Package info
-#&gt;  2018-08-15 15:01:47 WARNING:mypackage:Package warning
-#&gt;  2018-08-15 15:01:47 ERROR:mypackage:Package error
+#&gt;  2018-09-25 17:22:08 INFO:mypackage:Package info
+#&gt;  2018-09-25 17:22:08 WARNING:mypackage:Package warning
+#&gt;  2018-09-25 17:22:08 ERROR:mypackage:Package error
 #&gt;  [1] &quot;Hello John! Good to see you again.&quot;
 </code></pre>
 

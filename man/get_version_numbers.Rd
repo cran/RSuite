@@ -12,7 +12,7 @@ get_version_numbers(vers)
 or dash character (type: character).}
 }
 \value{
-list of versiong digit vectors (type: list)
+list of versions digit vectors (type: list)
 }
 \description{
 Retrieves version numbers from the input version string e.g. 1.2.0

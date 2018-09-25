@@ -4,7 +4,8 @@
 \alias{tmpl_start}
 \title{Creates a new template with the specified name, in the specified path.}
 \usage{
-tmpl_start(name, path = getwd(), add_prj = TRUE, add_pkg = TRUE)
+tmpl_start(name, path = getwd(), add_prj = TRUE, add_pkg = TRUE,
+  base_tmpl = "builtin")
 }
 \arguments{
 \item{name}{name of the template being created. (type: character(1))}
@@ -15,6 +16,9 @@ NULL will use the folder with user template. (type: character(1), default: getwd
 \item{add_prj}{if TRUE include project template to the template directory}
 
 \item{add_pkg}{if TRUE include package template in the template directory}
+
+\item{base_tmpl}{name of the package and/or project template (or path to it) to use for
+template creation. (type: character(1); default: builtin).}
 }
 \description{
 Creates a new template with the specified name, in the specified path.

@@ -13,7 +13,7 @@ default project from working directory if no default project exists.
 (type: rsuite_project, default: NULL)}
 }
 \value{
-named list with named with package names and containing system
+named list with package names and containing system
    requirements as value.
 }
 \description{

@@ -5,8 +5,7 @@
 \title{Installs project dependencies and needed supportive packages.}
 \usage{
 prj_install_deps(prj = NULL, clean = FALSE, vanilla_sups = FALSE,
-  relock = FALSE, check_repos_consistency = !grepl("unstable",
-  R.version$status))
+  relock = FALSE)
 }
 \arguments{
 \item{prj}{project to collect dependencies for if not passed will build
@@ -20,13 +19,6 @@ project for working directory. (type: rsuite_project, default: NULL)}
 
 \item{relock}{if TRUE allows updating the env.lock file
 (type: logical, default: FALSE)}
-
-\item{check_repos_consistency}{if TRUE will check installed packages if they are
-consistent with required R version (info taken from DESCRIPTION Built field).
-If the package is built for different version repository probably contains packages
-not rebuilt for the R version required. If the check for target R version fails
-the package is removed from the local project environment and error is reported that it
-is not available. (type: logical, default: \code{!grepl("unstable", R.version$status)})}
 }
 \value{
 TRUE if all build successfully.

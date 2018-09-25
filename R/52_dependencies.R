@@ -7,9 +7,39 @@
 #----------------------------------------------------------------------------
 
 #'
+#' Detects packages installed in project local encironment.
+#'
+#' @param params object of rsuite_project_params class
+#'
+#' @return named list with of following structure
+#' \describe{
+#'   \item{valid}{
+#'     data.frame (compatible with instaled.packages result)
+#'     describing installed packages build for compatible R version
+#'   }
+#'   \item{invalid}{
+#'     data.frame (compatible with instaled.packages result)
+#'     describing installed packages build for in-compatible R version
+#'  }
+#' }
+#'
+#' @keywords internal
+#' @noRd
+#'
+collect_installed_pkgs <- function(params) {
+  installed <- as.data.frame(utils::installed.packages(params$lib_path), stringsAsFactors = FALSE)
+  is_rver_valid <- majmin_rver(installed$Built) == majmin_rver(params$r_ver)
+  return(list(valid = installed[is_rver_valid, ],
+              invalid = installed[!is_rver_valid, ]))
+}
+
+
+#'
 #' Detects direct uninstalled project dependencies
 #'
 #' @param params object of rsuite_project_params class
+#' @param check_rver if TRUE will consider packages installed for other R version
+#'   uninstalled (type: logical(1); default: TRUE).
 #'
 #' @return object of versions class containing direct project dependencies
 #'   which are not installed in project local environment.
@@ -17,11 +47,16 @@
 #' @keywords internal
 #' @noRd
 #'
-collect_uninstalled_direct_deps <- function(params) {
+collect_uninstalled_direct_deps <- function(params, check_rver = TRUE) {
   dep_vers <- collect_prj_direct_deps(params)
-  installed <- as.data.frame(utils::installed.packages(params$lib_path),
-                             stringsAsFactors = FALSE)[, c("Package", "Version")]
+
+  all_installed <- collect_installed_pkgs(params)
+  installed <- all_installed$valid
+  if (!check_rver) {
+    installed <- rbind(installed, all_installed$invalid)
+  }
   dep_vers <- vers.rm_acceptable(dep_vers, installed)
+  return(dep_vers)
 }
 
 #'
@@ -255,9 +290,15 @@ collect_dir_script_deps <- function(dir, recursive = TRUE) {
     X = script_files,
     FUN = function(sf){
       lns <- readLines(sf)
+
       loads <- lns[grepl("^\\s*(require|library)\\((.+)\\)", lns)]
       loads <- gsub("\\s+", "", loads) # remove extra spaces
-      gsub("^(require|library)\\(['\"]?([^,'\"]+)['\"]?(,.+)?\\).*$", "\\2", loads)
+      explicit_pkgs <- gsub("^(require|library)\\(['\"]?([^,'\"]+)['\"]?(,.+)?\\).*$", "\\2", loads)
+
+      uses <- lns[grepl("^\\s*([^#]*[^A-Za-z0-9.#])?([A-Za-z0-9.]+)\\s*:::?.+$", lns)]
+      implicit_pkgs <- gsub("^(.*[^A-Za-z0-9.])?([A-Za-z0-9.]+)\\s*:::?.+$", "\\2", uses)
+
+      return(c(explicit_pkgs, implicit_pkgs))
     }))
   return(unique(pkgs))
 }
@@ -283,6 +324,9 @@ collect_all_subseq_deps <- function(vers, repo_info, type, all_pkgs = NULL, extr
   stopifnot(is.versions(vers))
   stopifnot(is.null(extra_reqs) || is.versions(extra_reqs))
 
+  resolve_in_archive <- function(cr) {
+    cr
+  }
   if (is.null(all_pkgs)) {
     stopifnot(!missing(repo_info))
     stopifnot(!missing(type))
@@ -290,6 +334,12 @@ collect_all_subseq_deps <- function(vers, repo_info, type, all_pkgs = NULL, extr
     contrib_url <- repo_info$get_contrib_url(type)    # from 53_repositories.R
     avail_vers <- vers.collect(contrib_url)
     all_pkgs <- avail_vers$get_avails()
+
+    if (type == "source") {
+      resolve_in_archive <- function(cr) {
+        resolve_deps_in_src_archive(cr, repo_info)
+      }
+    }
   } else {
     avail_pkgs <- as.data.frame(all_pkgs, stringsAsFactors = FALSE)
     avail_vers <- vers.collect(pkgs = avail_pkgs)
@@ -297,6 +347,7 @@ collect_all_subseq_deps <- function(vers, repo_info, type, all_pkgs = NULL, extr
 
   vers <- vers.rm_base(vers)
   vers_cr <- vers.check_against(vers, avail_vers, extra_reqs)
+  vers_cr <- resolve_in_archive(vers_cr)
 
   next_cr <- vers_cr
   while (check_res.has_found(next_cr)) {
@@ -306,10 +357,82 @@ collect_all_subseq_deps <- function(vers, repo_info, type, all_pkgs = NULL, extr
     dep_vers <- vers.rm_base(dep_vers)
 
     next_cr <- vers.check_against(dep_vers, avail_vers, extra_reqs)
+    next_cr <- resolve_in_archive(next_cr)
     vers_cr <- check_res.union(vers_cr, next_cr)
   }
 
   return(vers_cr)
+}
+
+
+resolve_deps_in_src_archive <- function(cr, repo_info) {
+  missing_vers <- check_res.get_missing(cr)
+
+  reqs <- vers.get(missing_vers, vers.get_names(missing_vers))
+  pkg_avails <- by(reqs, seq_len(nrow(reqs)), FUN = function(req) {
+    if (is.na(req$vmin) && is.na(req$vmax)) {
+      return()
+    }
+
+    avails <- repo_info$get_arch_src_cache(req$pkg)
+    if (is.null(avails)) {
+      arch_url <- repo_info$get_arch_src_url(req$pkg)
+      if (is.null(arch_url)) {
+        return()
+      }
+
+      conn <- url(arch_url)
+      html <- tryCatch({
+        suppressWarnings(readLines(conn))
+      },
+      error = function(e) character(0),
+      finally = {
+        close(conn)
+      })
+
+      ahref_re <- sprintf("^.*<a href=\"(%s_(.+)[.]tar[.]gz)\".+$", req$pkg)
+      html <- html[grepl(ahref_re, html)]
+      if (length(html) == 0) {
+        return()
+      }
+
+      avails <- data.frame(Package = req$pkg,
+                           Version = gsub(ahref_re, "\\2", html),
+                           File = gsub(ahref_re, "\\1", html),
+                           Repository = arch_url,
+                           stringsAsFactors = FALSE)
+
+      repo_info$set_arch_src_cache(req$pkg, avails)
+    }
+
+    avails$NVersion <- norm_version(avails$Version)
+    if (!is.na(req$vmin)) {
+      avails <- avails[avails$NVersion >= req$vmin, ]
+    }
+    if (!is.na(req$vmax)) {
+      avails <- avails[avails$NVersion <= req$vmax, ]
+    }
+
+    return(avails)
+  },
+  simplify = FALSE)
+
+  avail_pkgs <- do.call("rbind", pkg_avails)
+  if (is.null(avail_pkgs) || nrow(avail_pkgs) == 0) {
+    return(cr)
+  }
+
+  dload_dir <- file.path(tempdir(), "src_arch_dload")
+  if (!dir.exists(dload_dir)) {
+    dir.create(dload_dir, recursive = TRUE, showWarnings = FALSE)
+  }
+
+  dloads <- pkg_download(avail_pkgs = avail_pkgs, dest_dir = dload_dir)
+  avails <- get_package_files_info(dloads$Path)
+  found_vers <- vers.collect(pkgs = avails)
+
+  next_cr <- vers.check_against(missing_vers, found_vers)
+  return(check_res.union(cr, next_cr))
 }
 
 
@@ -333,6 +456,32 @@ get_lock_env_vers <- function(params) {
   return(env_lock_vers)
 }
 
+#'
+#' Collects names of packages required by the project based on information
+#' provided in installed.
+#'
+#' @param params project parameters. (type: rsuite_project_params)
+#' @param installed data.frame compatible with installed.packages.
+#'
+#' @return names of required by the project packages. (type: character(N))
+#'
+#' @keywords internal
+#' @noRd
+#'
+collect_prj_required_dep_names <- function(params, installed) {
+  deps <- collect_prj_direct_deps(params)
+
+  # to satisfy collect_all_subseq_deps requirements
+  installed$Repository <- rep(params$lib_path, nrow(installed))
+  installed$File <- rep(NA, nrow(installed))
+
+  cr <- collect_all_subseq_deps(deps, all_pkgs = installed)
+
+  proj_pkgs <- build_project_pkgslist(params$pkgs_path) # from 51_pkg_info.R
+  required <- c(cr$get_found_names(), proj_pkgs)
+
+  return(required)
+}
 
 #' Locks the project dependencies.
 #'

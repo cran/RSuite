@@ -6,6 +6,26 @@
 #----------------------------------------------------------------------------
 
 #'
+#' Bind to rstudio project creation menu. Creates an R Suite project.
+#' This function will be called when the user invokes the New Project
+#' wizard using the project template defined in the template file at:
+#'
+#'  inst/rstudio/templates/project/rsuite_project.dcf
+#'
+#'
+#' @keywords internal
+#' @noRd
+rstudio_prj_start <- function(path, ...) {
+  # collect arguments
+  name <- basename(path)
+  path <- dirname(path)
+  args <- list(...)
+
+  # create project
+  prj_start(name = name, path = path, skip_rc = args$skip_rc)
+}
+
+#'
 #' Detect project base dir in parents of path.
 #'
 #' @keywords internal
@@ -405,12 +425,6 @@ prj_unload <- function() {
 #'   (type: logical, default: FALSE)
 #' @param relock if TRUE allows updating the env.lock file
 #'   (type: logical, default: FALSE)
-#' @param check_repos_consistency if TRUE will check installed packages if they are
-#'   consistent with required R version (info taken from DESCRIPTION Built field).
-#'   If the package is built for different version repository probably contains packages
-#'   not rebuilt for the R version required. If the check for target R version fails
-#'   the package is removed from the local project environment and error is reported that it
-#'   is not available. (type: logical, default: \code{!grepl("unstable", R.version$status)})
 #'
 #' @return TRUE if all build successfully.
 #'
@@ -434,8 +448,7 @@ prj_unload <- function() {
 prj_install_deps <- function(prj = NULL,
                              clean = FALSE,
                              vanilla_sups = FALSE,
-                             relock = FALSE,
-                             check_repos_consistency = !grepl("unstable", R.version$status)) {
+                             relock = FALSE) {
   prj <- safe_get_prj(prj)
   stopifnot(!is.null(prj))
 
@@ -459,8 +472,7 @@ prj_install_deps <- function(prj = NULL,
 
   install_prj_deps(params, # from 11_install_prj_deps.R
                    vanilla_sups = vanilla_sups,
-                   relock = relock,
-                   check_repos_consistency = check_repos_consistency)
+                   relock = relock)
 }
 
 #'
@@ -827,29 +839,23 @@ prj_lock_env <- function(prj = NULL) {
   stopifnot(!is.null(prj))
   params <- prj$load_params()
 
-  # Retrieve direct dependencies
-  prj_dep_vers <- collect_prj_direct_deps(params)        # from 52_dependencies.R
+  uninst_deps <- collect_uninstalled_direct_deps(params) # from 52_dependencies.R
 
   prj_pkgs <- build_project_pkgslist(params$pkgs_path) # from 51_pkg_info.R
-  prj_dep_vers <- vers.rm(prj_dep_vers, prj_pkgs)
+  uninst_deps <- vers.rm(uninst_deps, prj_pkgs)
 
-  # Retrieve installed packages
-  env_pkgs <- as.data.frame(utils::installed.packages(lib.loc = params$lib_path),
-                            stringsAsFactors = FALSE)[, c("Package", "Version")]
-
-  # Check if direct dependencies are installed
-  missing_deps_vers <- vers.rm_acceptable(prj_dep_vers, env_pkgs)
-  assert(vers.is_empty(missing_deps_vers),
+  assert(vers.is_empty(uninst_deps),
          paste0("Some dependencies are not installed in project env: %s.",
                 " Please, build project environment first."),
-         paste(vers.get_names(missing_deps_vers), collapse = ","))
+         paste(vers.get_names(uninst_deps), collapse = ","))
+
+  env_pkgs <- collect_installed_pkgs(params)$valid # from 52_dependencies.R
+  required <- collect_prj_required_dep_names(params, env_pkgs) # from 52_dependencies.R
 
   # Create lock data and save to 'env.lock' file
-  lock_data <- env_pkgs[!(env_pkgs$Package %in% prj_pkgs), ]
+  lock_data <- env_pkgs[env_pkgs$Package %in% required, c("Package", "Version")]
   write.dcf(lock_data, file = params$lock_path)
   pkg_loginfo("The project environment was locked successfully")
-
-  pkg_loginfo("Project environment has been locked")
 }
 
 #'

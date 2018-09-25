@@ -67,7 +67,7 @@ pkg_download <- function(avail_pkgs, dest_dir) {
     return(remote_paths)
   }
 
-  remote_pkgs <- avail_pkgs[!grepl("^file:///", avail_pkgs$Repository), ]
+  remote_pkgs <- avail_pkgs[!is_local_url(avail_pkgs$Repository), ] # from 99_rpatches.R
   local_pkgs <- data.frame()
   if (nrow(remote_pkgs)) {
     # check/build download cache
@@ -100,8 +100,8 @@ pkg_download <- function(avail_pkgs, dest_dir) {
 
       if (any(cache_exists)) {
         local_pkgs <- remote_pkgs[cache_exists, ]
-        local_pkgs$Repository <- sprintf("file:///%s", dirname(cache_files[cache_exists]))
-        pkg_logdebug(sprintf("Will install '%s' from cached %s", local_pkgs$Package, local_pkgs$File))
+        local_pkgs$Repository <- path2local_url(dirname(cache_files[cache_exists])) # from 99_rpatches.R
+        pkg_logdebug(sprintf("Will use '%s' from cached %s", local_pkgs$Package, local_pkgs$File))
       }
     } else {
       # Caching is off: just download them
@@ -111,13 +111,12 @@ pkg_download <- function(avail_pkgs, dest_dir) {
     dloaded <- rbind(dloaded, remote_paths)
   }
 
-  local_pkgs <- rbind(local_pkgs, avail_pkgs[grepl("^file:///", avail_pkgs$Repository), ])
+  local_pkgs <- rbind(local_pkgs, avail_pkgs[is_local_url(avail_pkgs$Repository), ]) # from 99_rpatches.R
   if (nrow(local_pkgs)) {
     # download.packages does not copy local files
     #   here they are copied manually
-    local_paths <- do_dload(local_pkgs)
-    local_paths <- as.data.frame(local_paths, stringsAsFactors = FALSE)
-    colnames(local_paths) <- c("Package", "Path")
+    local_paths <- local_pkgs
+    local_paths$Path <- file.path(local_url2path(local_pkgs$Repository), local_pkgs$File)
 
     file.copy(from = local_paths$Path, to = dest_dir, overwrite = TRUE)
     local_paths$Path <- file.path(dest_dir, basename(local_paths$Path))
@@ -296,12 +295,14 @@ pkg_remove <- function(pkgs, lib_dir) {
                    while (search_item %in% search()) {
                      attch_pkg_path <- rsuite_fullUnifiedPath(system.file(package = pkg))
                      inlib_pkg_path <- rsuite_fullUnifiedPath(file.path(lib_dir, pkg))
-                     if (attch_pkg_path != inlib_pkg_path) {
+                     if (attch_pkg_path != "" && attch_pkg_path != inlib_pkg_path) {
+                       # if attch_pkg_path is empty, package folder was deleted partially
                        # if it's the same package loaded from another location
                        #  there is no point to detach it
                        break
                      }
-                     detach(search_item, unload = TRUE, character.only = TRUE)
+                     detach(search_item, unload = TRUE, character.only = TRUE,
+                            force = TRUE) # force even if dependent packages are loaded
                    }
                  })
   installed <- utils::installed.packages(lib_dir)[, "Package"]
@@ -364,8 +365,13 @@ pkg_install <- function(pkgs, lib_dir, type, repos, rver, check_repos_consistenc
 
   lapply(X = pkgs,
          FUN = function(pkg) {
-           bld_res <- install_package(pkg)
            pkg_name <- gsub("^([^_]+)_.+$", "\\1", basename(pkg))
+           if (majmin_rver(rver) == current_rver()) {
+             # force package unload & remove it completly
+             pkg_remove(pkgs = pkg_name, lib_dir = lib_dir)
+           }
+
+           bld_res <- install_package(pkg)
            pkg_path <- file.path(lib_dir, pkg_name)
            if (bld_res && !dir.exists(pkg_path)) {
              pkg_logwarn("= Restarting build of %s (succeded but no folder created)", basename(pkg))

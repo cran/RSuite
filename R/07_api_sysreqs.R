@@ -12,7 +12,7 @@
 #'    loaded project will be used or the default whichever exists. Will init the
 #'    default project from working directory if no default project exists.
 #'    (type: rsuite_project, default: NULL)
-#' @return named list with named with package names and containing system
+#' @return named list with package names and containing system
 #'    requirements as value.
 #'
 #' @family in SYSREQS
@@ -93,7 +93,7 @@ sysreqs_collect <- function(prj = NULL) {
 #' Checks for system requirements availability.
 #'
 #' Collects system requirements with \code{\link{sysreqs_collect}}
-#' and performs checks for their existence. Fill fail if some system
+#' and performs checks for their existence. Will fail if some system
 #' requirements are not satisfied.
 #'
 #' @param prj project object to check sys requirements for. If not passed the loaded
@@ -135,7 +135,8 @@ sysreqs_check <- function(prj = NULL) {
   result <- perform(recipe)
 
   assert(length(result$notools) + length(result$nolibs) == 0,
-         "Some system requirements are not satisfied")
+         sprintf("Some system requirements are not satisfied: %s",
+                 paste(c(result$notools, result$nolibs), collapse = ", ")))
 
   pkg_loginfo("All system requirements satisfied.")
 }
@@ -168,7 +169,7 @@ sysreqs_check <- function(prj = NULL) {
 #'       append = TRUE)
 #'
 #' \donttest{
-#'   # check if requirements or XML are satisfied
+#'   # check if requirements of XML are satisfied
 #'   sysreqs_install(prj)
 #' }
 #'

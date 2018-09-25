@@ -8,6 +8,9 @@
 #'
 #' This provides support for binary package installation from local CRAN on Linux.
 #'
+#' It does not change contrib.url default functionality: it path is provided for
+#' repos it will return path not url.
+#'
 #' @keywords internal
 #' @noRd
 #'
@@ -27,14 +30,14 @@ rsuite_contrib_url <- function(repos, type, rver = NA) {
     pkg_logwarn("Unknown platform %s. Only RedHat-like, Debian-like and SunOS are supported. Will use generic %s",
                 os_info$platform, os_path)
   } else if (is.na(os_info$version)) {
-    os_path = switch(os_info$platform,
+    os_path <- switch(os_info$platform,
                      RedHat = sprintf("rhel_%s", R.version$platform),
                      Debian = sprintf("deb_%s", R.version$platform),
                      SunOS  = sprintf("sol_%s", R.version$platrorm))
     pkg_logwarn("Could not detect %s(%s) version number. Will use generic %s",
                 os_info$distrib, os_info$platform, os_path)
   } else {
-    os_path = switch(os_info$platform,
+    os_path <- switch(os_info$platform,
                      RedHat = sprintf("rhel%s_%s", os_info$version, R.version$platform),
                      Debian = sprintf("deb%s_%s", os_info$version, R.version$platform),
                      SunOS = sprintf("sol%s_%s", os_info$version, R.version$platform),
@@ -108,6 +111,52 @@ rsuite_fullUnifiedPath <- function(path, short = TRUE) {
   return(sub("[/\\]*$", "", path))
 }
 
+#'
+#' Converts path to url form with file:// schema.
+#'
+#' If path is local URL already does nothing.
+#'
+#' @param path path to convert to local url. (type: character(N))
+#'
+#' @return url with schema file:// (type: character(N))
+#'
+#' @keywords internal
+#' @noRd
+#'
+path2local_url <- function(path) {
+  result <- unlist(lapply(path, function(p) {
+    if (is_local_url(p)) {
+      return(p)
+    }
+    return(sprintf("file:///%s", normalizePath(p, winslash = "/", mustWork = FALSE)))
+  }))
+  return(result)
+}
+
+local_url2path <- function(url) {
+  result <- unlist(lapply(url, function(u) {
+    if (!is_local_url(u)) {
+      return(u)
+    }
+    path <- if (get_os_type() == "windows") gsub("^file:///", "", u) else gsub("^file://", "", u)
+    return(normalizePath(path, mustWork = FALSE))
+  }))
+  return(result)
+}
+
+#'
+#' Checks is provided url is local (has file:// schema).
+#'
+#' @param url url to check for being local. (type: character(N))
+#'
+#' @return TRUE if url has file:// schema (type: logical(N))
+#'
+#' @keywords internal
+#' @noRd
+#'
+is_local_url <- function(url) {
+  return(grepl("^file://", url))
+}
 
 #'
 #' Retrieve internal package object by name.
@@ -130,3 +179,12 @@ get_pkg_intern <- function(package, name) {
   return(search_res$objs[[ixs]])
 }
 
+#'
+#' Checks if R version is stable.
+#'
+#' @keywords internal
+#' @noRd
+#'
+is_r_stable <- function() {
+  !grepl("unstable", R.version$status)
+}

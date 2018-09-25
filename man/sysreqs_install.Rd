@@ -30,7 +30,7 @@ write("library(XML)",
       append = TRUE)
 
 \donttest{
-  # check if requirements or XML are satisfied
+  # check if requirements of XML are satisfied
   sysreqs_install(prj)
 }
 

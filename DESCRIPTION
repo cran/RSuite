@@ -1,7 +1,7 @@
 Package: RSuite
 Type: Package
 Title: Supports Developing, Building and Deploying R Solution
-Version: 0.32-244
+Version: 0.33-246
 Authors@R: c( person("Walerian", "Sokolowski", email =
         "rsuite@wlogsolutions.com", role = c("aut", "cre")),
         person("Wit", "Jakuczun", email =
@@ -19,16 +19,17 @@ Description: Supports safe and reproducible solutions development in R.
         It will help you with environment separation per project,
         dependency management, local packages creation and preparing
         deployment packs for your solutions.
-URL: http://rsuite.io
+URL: https://rsuite.io
 BugReports: https://github.com/WLOGSolutions/RSuite/issues
 License: MIT + file LICENSE
+Encoding: UTF-8
 Depends: R (>= 3.2.0)
-Imports: logging, devtools, roxygen2, git2r, jsonlite, subprocess, httr
+Imports: logging, devtools, roxygen2, git2r, jsonlite, processx, httr
 Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 NeedsCompilation: no
-Packaged: 2018-08-15 13:01:51 UTC; ws171913
+Packaged: 2018-09-25 15:22:12 UTC; ws171913
 Author: Walerian Sokolowski [aut, cre],
   Wit Jakuczun [aut],
   Yulia Yakimechko [aut],
@@ -38,4 +39,4 @@ Author: Walerian Sokolowski [aut, cre],
   R Consortium [ctb] (Definitions of system requirements are taken from
     sysreqsdb project.)
 Repository: CRAN
-Date/Publication: 2018-08-15 13:50:06 UTC
+Date/Publication: 2018-09-25 16:30:03 UTC

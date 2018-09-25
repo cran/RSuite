@@ -38,7 +38,8 @@ verbosity.
 
 }
 \seealso{
-Other in PKGZIP building: \code{\link{pkgzip_build_ext_packages}},
+Other in PKGZIP building: \code{\link{pkgzip_build_bioc_package}},
+  \code{\link{pkgzip_build_ext_packages}},
   \code{\link{pkgzip_build_github_package}},
   \code{\link{pkgzip_build_prj_packages}}
 }
