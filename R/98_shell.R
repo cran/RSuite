@@ -66,8 +66,11 @@ get_cmd_retcode <- function(desc, cmd, ..., log_debug = FALSE) {
   }
 
   .log_single_out <- function(lines) {
+    lines <- unlist(strsplit(lines, "\n"))
+    lines <- gsub("^.*\r", "", lines)
+
     lapply(lines, function(ln) {
-      if (nchar(ln) > 0) {
+      if (nchar(ln, type = "bytes") > 0) {
         log_fun("%s output: %s", desc, ln)
       }
     })
@@ -83,11 +86,14 @@ get_cmd_retcode <- function(desc, cmd, ..., log_debug = FALSE) {
                              stdout = "|", stderr = "|", cleanup = TRUE)
   tryCatch({
     repeat {
-      p$poll_io(timeout = 3000)
+      p$poll_io(timeout = 1000)
       .log_single_out(p$read_output_lines())
       .log_single_out(p$read_error_lines())
-      if (!p$is_alive()) break;
+      if (!p$is_alive()) break
     }
+    p$poll_io(timeout = 1000)
+    .log_single_out(p$read_output_lines())
+    .log_single_out(p$read_error_lines())
   },
   finally = {
     ret_code <- p$get_exit_status()
@@ -157,6 +163,7 @@ run_rscript <- function(script_code, ..., rver = NA, ex_libpath = NULL, log_debu
   full_code <- sprintf(paste0(script_code, collapse = ";"), ...)
 
   cmd0 <- get_rscript_path(rver = ifelse(is.na(rver), current_rver(), rver)) # from 97_rversion.R
+  cmd0 <- rsuite_fullUnifiedPath(cmd0)
 
   # Before unsetting the R_LIBS_USER variable we have to check whether we are
   # going to run a subprocess using a different R version than the one
@@ -182,38 +189,56 @@ run_rscript <- function(script_code, ..., rver = NA, ex_libpath = NULL, log_debu
                            "}, error = function(e) {",
                            "  cat(sprintf('~ error:%%s\\n', e))",
                            "})"),
-                    rscript_arg("new", rsuite_fullUnifiedPath(ex_libpath)), full_code)
+                    rscript_arg("new", rsuite_fullUnifiedPath(ex_libpath)),
+                    full_code)
   if (get_os_platform() %in% c("MacOS", "SunOS")) {
     # On MacOS special characters are interpreted by process, so they have to be twice escaped
     # something alike is happening on SunOS
     script <- gsub("\\\\([tn])", "\\\\\\\\\\1", script)
   }
 
-  rscript_cmd <- paste(cmd0, "--no-init-file", "--no-site-file", "-e", shQuote(script), "2>&1")
   log_fun <- if (log_debug) pkg_logdebug else pkg_logfinest
-  log_fun("> cmd: %s", rscript_cmd)
 
-  con <- pipe(rscript_cmd, open = "rt")
+  cmd <- paste(c(cmd0, "--no-init-file", "--no-site-file", "-e", shQuote(script), "2>&1"),
+               collapse = " ")
+  log_fun("> cmd: %s", cmd)
+
+  start_time <- Sys.time()
+  con <- pipe(cmd, open = "rt")
+  Sys.sleep(0.5)
 
   result <- tryCatch({
-    ok <- FALSE
-    while (TRUE) {
+    status <- FALSE
+    has_output <- FALSE
+    repeat {
       ln <- readLines(con, n = 1, skipNul = TRUE)
-      if (!length(ln)) {
-        break
+      if (length(ln) == 0) {
+        if (has_output || as.numeric(Sys.time() - start_time) > 5) {
+          # if has output already or is waiting for 5 secs alredy - give up
+          break
+        }
+        Sys.sleep(1.0) # wait subprocess to start
+        next
+      }
+      has_output <- TRUE
+      if (nchar(trimws(ln)) == 0) {
+        # nothing interesting to log
+        next
       }
 
+      log_fun("> %s", ln)
       if (grepl("^~ error:", ln)) {
-        ok <- sub("^~ error:", "", ln)
+        status <- sub("^~ error:", "", ln)
       } else if (ln == "~ done") {
-        ok <- NULL
-      } else {
-        log_fun("> %s", ln)
+        status <- NULL
       }
     }
-    ok
+    status
   },
-  error = function(e) FALSE,
+  error = function(e) {
+    log_fun("Error while running script: %s", e)
+    FALSE
+  },
   finally = {
     close(con)
   })

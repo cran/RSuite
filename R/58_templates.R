@@ -30,7 +30,11 @@
   }
 
   # look for templates in the global templates directory
-  base_tmpl_dirs <- c(base_tmpl_dirs, get_global_templ_dir())
+  glob_templ_base_dir <- get_global_templ_dir()
+  if (!is.null(glob_templ_base_dir)) {
+    glob_tmpl_dir <- file.path(glob_templ_base_dir, tmpl)
+    base_tmpl_dirs <- c(base_tmpl_dirs, glob_tmpl_dir)
+  }
 
   if (length(base_tmpl_dirs) == 0) {
     return(NULL)
@@ -356,7 +360,9 @@ is_binary <- function(file, blocksize = 512) {
   block <- readBin(file, "raw", n = blocksize)
   null_byte <- as.raw(00)
 
-  special_chars <- sapply(c("\n", "\r", "\t", "\f", "\b"), charToRaw)
+  special_chars <- vapply(c("\n", "\r", "\t", "\f", "\b"),
+                          FUN = charToRaw,
+                          FUN.VALUE = raw(1))
   names(special_chars) <- NULL
   text_chars <- c(as.raw(32:127), special_chars)
 

@@ -27,32 +27,38 @@ rsuite.user_templ_path option. The global template is specified
 as '/etc/.rsuite/templates' and only concerns Linux platforms
 }
 \examples{
+\donttest{
+  # setup
+  old_option_value <- getOption("rsuite.user_templ_path")
+  tmpl_dir <- tempfile("user_templates_")
+  dir.create(tmpl_dir, recursive = TRUE, showWarnings = FALSE)
 
-old_option_value <- getOption("rsuite.user_templ_path")
-tmpl_dir <- tempfile("user_templates_")
-dir.create(tmpl_dir, recursive = TRUE, showWarnings = FALSE)
+  options(rsuite.user_templ_path = tmpl_dir)
+  user_templ <- tempfile("usr_templ_")
 
-options(rsuite.user_templ_path = tmpl_dir)
-user_templ <- tempfile("usr_templ_")
+  # initialize template from builtin
+  tmpl_start(basename(user_templ), path = tempdir())
+  # register it
+  tmpl_register(user_templ)
 
-on.exit({
+  # clean up
   options(rsuite.user_templ_path = old_option_value)
   unlink(tmpl_dir, recursive = TRUE, force = TRUE)
   unlink(user_templ, recursive = TRUE, force = TRUE)
-}, add = TRUE)
-
-tmpl_start(basename(user_templ), path = tempdir())
-tmpl_register(user_templ)
+}
 
 }
 \seealso{
 Other miscellaneous: \code{\link{rsuite_check_version}},
   \code{\link{rsuite_getLogger}},
+  \code{\link{rsuite_get_ci_adapter_names}},
   \code{\link{rsuite_get_os_info}},
   \code{\link{rsuite_get_rc_adapter_names}},
   \code{\link{rsuite_get_repo_adapter_names}},
+  \code{\link{rsuite_register_ci_adapter}},
   \code{\link{rsuite_register_rc_adapter}},
   \code{\link{rsuite_register_repo_adapter}},
+  \code{\link{rsuite_unregister_ci_adapter}},
   \code{\link{rsuite_unregister_rc_adapter}},
   \code{\link{rsuite_unregister_repo_adapter}},
   \code{\link{rsuite_update}}

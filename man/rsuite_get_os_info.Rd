@@ -26,10 +26,13 @@ rsuite_get_os_info()
 \seealso{
 Other miscellaneous: \code{\link{rsuite_check_version}},
   \code{\link{rsuite_getLogger}},
+  \code{\link{rsuite_get_ci_adapter_names}},
   \code{\link{rsuite_get_rc_adapter_names}},
   \code{\link{rsuite_get_repo_adapter_names}},
+  \code{\link{rsuite_register_ci_adapter}},
   \code{\link{rsuite_register_rc_adapter}},
   \code{\link{rsuite_register_repo_adapter}},
+  \code{\link{rsuite_unregister_ci_adapter}},
   \code{\link{rsuite_unregister_rc_adapter}},
   \code{\link{rsuite_unregister_repo_adapter}},
   \code{\link{rsuite_update}}, \code{\link{tmpl_register}}

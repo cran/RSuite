@@ -187,22 +187,25 @@ tmpl_start <- function(name, path = getwd(), add_prj = TRUE, add_pkg = TRUE, bas
 #' template directory (/etc/.rsuite/templates on Linux platforms)
 #'
 #' @examples
+#' \donttest{
+#'   # setup
+#'   old_option_value <- getOption("rsuite.user_templ_path")
+#'   tmpl_dir <- tempfile("user_templates_")
+#'   dir.create(tmpl_dir, recursive = TRUE, showWarnings = FALSE)
 #'
-#' old_option_value <- getOption("rsuite.user_templ_path")
-#' tmpl_dir <- tempfile("user_templates_")
-#' dir.create(tmpl_dir, recursive = TRUE, showWarnings = FALSE)
+#'   options(rsuite.user_templ_path = tmpl_dir)
+#'   user_templ <- tempfile("usr_templ_")
 #'
-#' options(rsuite.user_templ_path = tmpl_dir)
-#' user_templ <- tempfile("usr_templ_")
+#'   # initialize template from builtin
+#'   tmpl_start(basename(user_templ), path = tempdir())
+#'   # register it
+#'   tmpl_register(user_templ)
 #'
-#' on.exit({
+#'   # clean up
 #'   options(rsuite.user_templ_path = old_option_value)
 #'   unlink(tmpl_dir, recursive = TRUE, force = TRUE)
 #'   unlink(user_templ, recursive = TRUE, force = TRUE)
-#' }, add = TRUE)
-#'
-#' tmpl_start(basename(user_templ), path = tempdir())
-#' tmpl_register(user_templ)
+#' }
 #'
 #' @export
 #'
@@ -213,7 +216,7 @@ tmpl_register <- function(path = NULL, global = FALSE) {
   path <- rsuite_fullUnifiedPath(path, short = FALSE)
   if (global) {
     tmpl_dir <- get_global_templ_dir()
-    assert(!is.null(tmpl_dir), "Global template directory error.")
+    assert(!is.null(tmpl_dir), "Global templates directory is not available.")
   } else{
     tmpl_dir <- get_user_templ_base_dir(create = TRUE) # from 58_templates.R
     assert(!is.null(tmpl_dir), "Local templates directory is not defined(rsuite.user_templ_path)")

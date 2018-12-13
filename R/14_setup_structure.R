@@ -202,7 +202,8 @@ create_package_structure <- function(pkg_dir, pkg_tmpl = "builtin") {
   success <- copy_folder(tmpl_dir, pkg_dir) # from 98_shell.R
   assert(success, "Failed to copy template files.")
 
-  files <- list.files(pkg_dir, full.names = TRUE, include.dirs = FALSE, recursive = TRUE)
+  files <- list.files(pkg_dir,
+                      full.names = TRUE, include.dirs = FALSE, recursive = TRUE, all.files = TRUE)
   files <- files[!file.info(files)$isdir]
 
   # now replace markers in files
@@ -265,9 +266,9 @@ create_project_structure <- function(prj_dir, prj_tmpl = "builtin") {
 
   if (!file.exists(file.path(tmpl_dir, "PARAMETERS"))
       || any(grepl("__LatestMRAN__", readLines(file.path(tmpl_dir, "PARAMETERS"))))) {
-    mran_date <- get_latest_mran_date()
+    mran_repo <- get_latest_mran_repo()
   } else {
-    mran_date <- Sys.Date()
+    mran_repo <- sprintf("MRAN[%s]", Sys.Date())
   }
 
   keywords <- c(
@@ -275,7 +276,7 @@ create_project_structure <- function(prj_dir, prj_tmpl = "builtin") {
     RSuiteVersion = as.character(utils::packageVersion("RSuite")),
     RVersion = current_rver(), # from 97_rversion.R
     Date = as.character(Sys.Date()),
-    LatestMRAN = sprintf("MRAN[%s]", as.character(mran_date)),
+    LatestMRAN = mran_repo,
     User = iconv(Sys.info()[["user"]], from = "utf-8", to = "latin1")
   )
 
@@ -336,6 +337,25 @@ detect_rc_adapter <- function(prj_dir) {
 
     if (rc_adapter_is_under_control(rc_adapter, dir = prj_dir)) {
       return(rc_adapter)
+    }
+  }
+}
+
+#'
+#' Detects which CI system has triggered current build process.
+#'
+#' @return ci_adapter or NULL
+#'
+#' @keywords internal
+#' @noRd
+#'
+detect_ci_adapter <- function() {
+  for (ci_name in reg_ci_adapter_names()) {
+    ci_adapter <- find_ci_adapter(ci_name)
+    stopifnot(!is.null(ci_adapter))
+
+    if (ci_adapter_is_building(ci_adapter)) {
+      return(ci_adapter)
     }
   }
 }

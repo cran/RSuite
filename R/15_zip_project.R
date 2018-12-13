@@ -47,6 +47,15 @@ detect_zip_version <- function(params, zip_ver) {
     zip_ver <- denorm_version(max(norm_version(pkg_vers)))
   }
 
+  build_number <- detect_ci_build_number()
+  if (!is.null(build_number)) {
+    assert(grepl("^\\d+$", build_number),
+           paste0("CI build number detected(%s) is invalid:",
+                  " it must contain digits only as it is appended to project packages version numbers."),
+           build_number)
+    return(list(ver = paste0(zip_ver, "_", build_number), rev = build_number))
+  }
+
   revision <- detect_consistent_revision(params)
   if (!is.null(revision)) {
     assert(grepl("^\\d+$", revision),
@@ -62,6 +71,24 @@ detect_zip_version <- function(params, zip_ver) {
   }
 
   return(list(ver = paste0(zip_ver, "x"), rev = NULL))
+}
+
+#'
+#' Detects CI project build number.
+#'
+#' @return ci build number detected (type: character)
+#'
+#' @keywords internal
+#' @noRd
+#'
+detect_ci_build_number <- function() {
+  ci_adapter <- detect_ci_adapter()
+  if (is.null(ci_adapter)) {
+    return(NULL)
+  }
+
+  ci_ver <- ci_adapter_get_version(ci_adapter)
+  return(ci_ver)
 }
 
 #'
@@ -112,6 +139,10 @@ zip_project <- function(params, version, odir) {
     success <- dir.create(wdir, recursive = TRUE)
     assert(success, "Failed to create temporary folder %s", wdir)
   }
+  on.exit({
+    unlink(wdir, recursive = TRUE, force = TRUE)
+  },
+  add = TRUE)
 
   prj_name <- params$get_safe_project_name()
   root_dir <- file.path(wdir, prj_name)
@@ -123,57 +154,53 @@ zip_project <- function(params, version, odir) {
   success <- dir.create(root_dir)
   assert(success, "Failed to create temporary folder")
 
-  tryCatch({
-    success <- dir.create(file.path(root_dir, "logs"))
+  success <- dir.create(file.path(root_dir, "logs"))
+  assert(success,
+         "Failed to create logs folder in temporary folder")
+
+  success <- file.copy(params$lib_path, root_dir, recursive = TRUE)
+  assert(success,
+         "Failed to copy project libraries to temporary folder")
+
+  success <- file.copy(file.path(params$prj_path, ".Rprofile"), root_dir)
+
+  if (dir.exists(params$script_path)) {
+    success <- file.copy(params$script_path, root_dir, recursive = TRUE)
     assert(success,
-           "Failed to create logs folder in temporary folder")
+           "Failed to copy scripts to temporary folder")
+  }
 
-    success <- file.copy(params$lib_path, root_dir, recursive = TRUE)
+  for (a in gsub("^\\s+|\\s+$", "", unlist(strsplit(params$artifacts, ",")))) {
+    apath <- file.path(params$prj_path, a)
+    success <- suppressWarnings(file.copy(apath, root_dir, recursive = TRUE))
     assert(success,
-           "Failed to copy project libraries to temporary folder")
+           "Failed to copy artifact %s to temporary folder", a)
+  }
 
-    success <- file.copy(file.path(params$prj_path, ".Rprofile"), root_dir)
+  # remove any .Rproj.user, .Rhistory, .RData, if exists in root_dir
+  to_rem <- c(
+    list.files(root_dir, pattern = "^[.]Rproj.user", recursive = TRUE, include.dirs = TRUE, all.files = TRUE),
+    list.files(root_dir, pattern = "^[.]RData", recursive = TRUE, include.dirs = TRUE, all.files = TRUE),
+    list.files(root_dir, pattern = "^[.]Rhistory", recursive = TRUE, include.dirs = TRUE, all.files = TRUE),
+    list.files(root_dir, pattern = "^[.]svn", recursive = TRUE, include.dirs = TRUE, all.files = TRUE)
+  )
+  unlink(file.path(root_dir, to_rem), recursive = TRUE, force = TRUE)
 
-    if (dir.exists(params$script_path)) {
-      success <- file.copy(params$script_path, root_dir, recursive = TRUE)
-      assert(success,
-             "Failed to copy scripts to temporary folder")
-    }
+  # remove any RC administratives from in root_dir
+  rc_adapter <- detect_rc_adapter(params$prj_path)
+  if (!is.null(rc_adapter)) {
+    rc_adapter_remove_admins(rc_adapter, root_dir)
+  }
 
-    for (a in gsub("^\\s+|\\s+$", "", unlist(strsplit(params$artifacts, ",")))) {
-      apath <- file.path(params$prj_path, a)
-      success <- suppressWarnings(file.copy(apath, root_dir, recursive = TRUE))
-      assert(success,
-             "Failed to copy artifact %s to temporary folder", a)
-    }
+  writeLines(sprintf("%s v%s", params$project, version), file.path(root_dir, "readme.txt"))
 
-    # remove any .Rproj.user, .Rhistory, .RData, if exists in root_dir
-    to_rem <- c(
-      list.files(root_dir, pattern = "^[.]Rproj.user", recursive = TRUE, include.dirs = TRUE, all.files = TRUE),
-      list.files(root_dir, pattern = "^[.]RData", recursive = TRUE, include.dirs = TRUE, all.files = TRUE),
-      list.files(root_dir, pattern = "^[.]Rhistory", recursive = TRUE, include.dirs = TRUE, all.files = TRUE),
-      list.files(root_dir, pattern = "^[.]svn", recursive = TRUE, include.dirs = TRUE, all.files = TRUE)
-    )
-    unlink(file.path(root_dir, to_rem), recursive = TRUE, force = TRUE)
+  zip_file_name <- sprintf("%s_%s.zip", prj_name, version)
+  pkg_loginfo("... done. Creating zip file %s ...", zip_file_name)
 
-    # remove any RC administratives from in root_dir
-    rc_adapter <- detect_rc_adapter(params$prj_path)
-    if (!is.null(rc_adapter)) {
-      rc_adapter_remove_admins(rc_adapter, root_dir)
-    }
+  zip_file_path <- file.path(rsuite_fullUnifiedPath(odir), zip_file_name)
+  success <- zip_folder(wdir, zip_file_path)
+  assert(success, "Failed to create zip file (zip returned non 0 return status).")
 
-    writeLines(sprintf("%s v%s", params$project, version), file.path(root_dir, "readme.txt"))
-
-    zip_file_name <- sprintf("%s_%s.zip", prj_name, version)
-    pkg_loginfo("... done. Creating zip file %s ...", zip_file_name)
-
-    zip_file_path <- file.path(rsuite_fullUnifiedPath(odir), zip_file_name)
-    success <- zip_folder(wdir, zip_file_path)
-    assert(success, "Failed to create zip file (zip returned non 0 return status).")
-  },
-  finally = {
-    unlink(wdir, recursive = TRUE, force = TRUE)
-  })
   pkg_loginfo("Zip file created: %s", file.path(odir, zip_file_name))
 
   return(invisible(zip_file_path))
@@ -208,7 +235,7 @@ zip_folder <- function(wspace, zip_file_path) {
   }
 
   if (zip_res == FALSE) {
-    pkg_logwarn("Zip building aborted for")
+    pkg_logwarn("Zip building aborted for %s", zip_file_path)
   } else {
     pkg_logwarn("Zip building failed: %s", zip_res)
   }
