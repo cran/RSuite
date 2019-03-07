@@ -1,9 +1,9 @@
-#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------#
 # RSuite
 # Copyright (c) 2017, WLOG Solutions
 #
 # RC adapter working with GIT.
-#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------#
 
 #'
 #' Creates RC adapter to handle GIT repos.
@@ -172,6 +172,32 @@ git_add_folder <- function(repo, fld_path, git_path_f, up_ignores = c()) {
   }
 }
 
+
+#'
+#' Detects relative path of \code{curr} in \code{parent}
+#'
+#' @return path detected
+#'
+#' @keywords internal
+#' @noRd
+#'
+.get_rel_path <- function(parent, curr) {
+  parent <- gsub("/+$", "", normalizePath(parent, winslash = "/"))
+  curr <- gsub("/+$", "", normalizePath(curr, winslash = "/"))
+
+  rel_path <- c()
+  if (dir.exists(curr)) {
+    rel_path <- c("")
+  }
+
+  while (parent != curr) {
+    rel_path <- c(basename(curr), rel_path)
+    curr <- dirname(curr)
+  }
+
+  return(paste(rel_path, collapse = "/"))
+}
+
 #'
 #' Implementation of rc_adapter_get_version for GIT rc adapted.
 #'
@@ -184,14 +210,22 @@ rc_adapter_get_version.rsuite_rc_adapter_git <- function(rc_adapter, dir) {
 
   # detect head target
   # in git2r > 0.21.0 head is deprecated and causes warnings: repository_head should be used
-  # in earlier versions repository_head is not available and check will complain if referencing it directly
   git2r_ver <- paste0(utils::packageVersion("git2r"))
-  head_branch <- if (utils::compareVersion(git2r_ver, "0.21.0") > 0) {
-    get_pkg_intern("git2r", "repository_head")() # from 99_rpatches.R
+  head_branch <-
+    if (utils::compareVersion(git2r_ver, "0.21.0") > 0) {
+      # in earlier versions repository_head is not available and check will complain if
+      # referencing it directly to git2r::repository_head
+      get_pkg_intern("git2r", "repository_head")() # from 99_rpatches.R
+    } else {
+      git2r::head(repo)
+    }
+  assert(!is.null(head_branch), "Failed to find HEAD branch. Is it fresh repository?")
+
+  if (class(head_branch) == "git_commit") {
+    head_target <- ifelse(isS4(head_branch), head_branch@sha, head_branch$sha)
   } else {
-    git2r::head(repo)
+    head_target <- git2r::branch_target(head_branch)
   }
-  head_target <- git2r::branch_target(head_branch)
 
   # detect if HEAD commit is tagged
   repo_tags <- git2r::tags(repo)
@@ -227,8 +261,14 @@ rc_adapter_get_version.rsuite_rc_adapter_git <- function(rc_adapter, dir) {
 
   needs_update <- length(diff_working_tree_files) + length(diff_head_files) > 0
 
+  dir_in_repo_path <- .get_rel_path(git2r::workdir(repo), dir)
+  is_under_dir <- function(fname) grepl(sprintf("^%s", dir_in_repo_path), fname)
+
   return(list(
-    has_changes = length(st$staged) + length(st$untracked) + length(st$unstaged) > 0,
+    has_changes =
+      any(is_under_dir(st$staged)) ||
+      any(is_under_dir(st$untracked)) ||
+      any(is_under_dir(st$unstaged)),
     revision = head_tag,
     needs_update = needs_update
   ))

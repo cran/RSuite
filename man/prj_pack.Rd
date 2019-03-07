@@ -13,16 +13,16 @@ the default whichever exists. Will init default project from the working
 directory if no default project exists. (type: rsuite_project, default: NULL)}
 
 \item{path}{folder path to put output pack into. The folder must exist.
-(type: character, default: \code{getwd()})}
+(type: character(1), default: \code{getwd()})}
 
 \item{pkgs}{names of packages to include in the pack. If NULL will include all
 project packages (type: character, default: NULL)}
 
 \item{inc_master}{if TRUE will include master scripts in the pack.
-(type: logical, default: TRUE)}
+(type: logical(1), default: TRUE)}
 
 \item{pack_ver}{if passed enforce the version of the pack to the passed value.
-Expected form of version is DD.DD. (type: character, default: NULL)}
+Expected form of version is DD.DD. (type: character(1), default: NULL)}
 
 \item{rver}{if passed enforce destination R version of the pack.
 (type: character(1), default: NULL)}

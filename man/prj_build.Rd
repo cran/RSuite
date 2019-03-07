@@ -4,7 +4,8 @@
 \alias{prj_build}
 \title{Builds project internal packages and installs them.}
 \usage{
-prj_build(prj = NULL, type = NULL, rebuild = FALSE, vignettes = TRUE)
+prj_build(prj = NULL, type = NULL, rebuild = FALSE, vignettes = TRUE,
+  tag = FALSE)
 }
 \arguments{
 \item{prj}{project to build if not passed will build project for working
@@ -18,6 +19,9 @@ changes detected (type: logical)}
 
 \item{vignettes}{if FALSE will not build vignettes which can highly decrease
 package building time (type: logical, default: TRUE)}
+
+\item{tag}{if TRUE will tag packages with RC revision. Enforces rebuild.
+(type: logical; default: FALSE)}
 }
 \description{
 Builds project internal packages and installs them.
