@@ -51,3 +51,4 @@ Other in project management: \code{\link{prj_build}},
   \code{\link{prj_start}}, \code{\link{prj_unload}},
   \code{\link{prj_zip}}
 }
+\concept{in project management}

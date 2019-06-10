@@ -40,3 +40,4 @@ write("library(XML)",
 Other in SYSREQS: \code{\link{sysreqs_collect}},
   \code{\link{sysreqs_install}}
 }
+\concept{in SYSREQS}

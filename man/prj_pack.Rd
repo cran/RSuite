@@ -4,8 +4,8 @@
 \alias{prj_pack}
 \title{Prepares project source pack tagged with version.}
 \usage{
-prj_pack(prj = NULL, path = getwd(), pkgs = NULL, inc_master = TRUE,
-  pack_ver = NULL, rver = NULL)
+prj_pack(prj = NULL, path = getwd(), pkgs = NULL,
+  inc_master = TRUE, pack_ver = NULL, rver = NULL)
 }
 \arguments{
 \item{prj}{project object to pack. if not passed the loaded project will be packed or
@@ -77,3 +77,4 @@ Other in project management: \code{\link{prj_build}},
   \code{\link{prj_start_package}}, \code{\link{prj_start}},
   \code{\link{prj_unload}}, \code{\link{prj_zip}}
 }
+\concept{in project management}

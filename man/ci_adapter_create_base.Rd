@@ -29,3 +29,4 @@ ci_adapter_create_own <- function() {
 Other in extending RSuite with CI adapter: \code{\link{ci_adapter_get_version}},
   \code{\link{ci_adapter_is_building}}
 }
+\concept{in extending RSuite with CI adapter}

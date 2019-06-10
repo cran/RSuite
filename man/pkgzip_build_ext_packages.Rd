@@ -4,8 +4,9 @@
 \alias{pkgzip_build_ext_packages}
 \title{Builds PKGZIP out of passed external packages.}
 \usage{
-pkgzip_build_ext_packages(pkgs, prj = NULL, pkg_type = .Platform$pkgType,
-  path = getwd(), with_deps = FALSE, filter_repo = NULL)
+pkgzip_build_ext_packages(pkgs, prj = NULL,
+  pkg_type = .Platform$pkgType, path = getwd(), with_deps = FALSE,
+  filter_repo = NULL)
 }
 \arguments{
 \item{pkgs}{vector of names of external packages which should be included in
@@ -61,3 +62,4 @@ Other in PKGZIP building: \code{\link{pkgzip_build_bioc_package}},
   \code{\link{pkgzip_build_package_files}},
   \code{\link{pkgzip_build_prj_packages}}
 }
+\concept{in PKGZIP building}

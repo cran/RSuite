@@ -26,3 +26,4 @@ tmpl_list_registered()
 \seealso{
 Other in templates management: \code{\link{tmpl_start}}
 }
+\concept{in templates management}

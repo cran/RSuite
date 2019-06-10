@@ -97,3 +97,4 @@ Other in repository management: \code{\link{repo_mng_init}},
   \code{\link{repo_upload_package_files}},
   \code{\link{repo_upload_pkgzip}}
 }
+\concept{in repository management}

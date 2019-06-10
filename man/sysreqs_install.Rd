@@ -39,3 +39,4 @@ write("library(XML)",
 Other in SYSREQS: \code{\link{sysreqs_check}},
   \code{\link{sysreqs_collect}}
 }
+\concept{in SYSREQS}

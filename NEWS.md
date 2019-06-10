@@ -1,11 +1,24 @@
+# RSuite 0.37 (2019-06-07)
+  * Detection if vignettes are to build fixed.
+  * Fixed building vignettes: use devtools::build_vignettes and place generated
+    files for building not just for loading. Also if vignettes index is generated
+    use it instead of creating artificial.
+  * Sysreqs on linux/osx detects if installation is possible (installation is under 
+    root account). It detects also which sysreqs are installed already and do not
+    try to install them again. Sysreqs are installed one by one so it is possible
+    to find out which caused the problem while installing.
+  * Fixed default proj template to run properly on OSX
+  * Updated sysreqsdb to handle conda, python and make on OSX
+  * Added ability to wrap deploymnet zip into bash installer package.
+
 # RSuite 0.36 (2019-03-06)
   * #184: detecting declaration of dependencies in scripts with "library (...)".
   * handling of branches in Git RC adapter fixed.
   * #183: local Git repository is created while starting project if not RC detected
   * when checking for changes in Git repository only changes in project folder are
     considered.
-  * prj_build have new parameter tag which enforces tagging packages with RC revision
-    before build.
+  * prj_build have new parameter tag which enforces tagging packages with RC
+    revision before build.
   
 # RSuite 0.35 (2019-01-07)
   * Fix in dependecy resolving process. Upper requirements enforse subdependencies

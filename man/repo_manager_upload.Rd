@@ -50,3 +50,4 @@ Other in extending RSuite with Repo adapter: \code{\link{repo_adapter_create_bas
   \code{\link{repo_manager_init}},
   \code{\link{repo_manager_remove}}
 }
+\concept{in extending RSuite with Repo adapter}

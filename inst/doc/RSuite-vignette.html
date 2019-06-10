@@ -1,210 +1,107 @@
 <!DOCTYPE html>
-<html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Basic R Suite usage</title>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
 
-<script type="text/javascript">
-window.onload = function() {
-  var imgs = document.getElementsByTagName('img'), i, img;
-  for (i = 0; i < imgs.length; i++) {
-    img = imgs[i];
-    // center an image if it is the only element of its parent
-    if (img.parentElement.childElementCount === 1)
-      img.parentElement.style.textAlign = 'center';
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="WLOG Solutions" />
+
+<meta name="date" content="2019-06-10" />
+
+<title>RSuite basic workflow</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
   }
-};
-</script>
-
-<!-- Styles for R syntax highlighter -->
-<style type="text/css">
-   pre .operator,
-   pre .paren {
-     color: rgb(104, 118, 135)
-   }
-
-   pre .literal {
-     color: #990073
-   }
-
-   pre .number {
-     color: #099;
-   }
-
-   pre .comment {
-     color: #998;
-     font-style: italic
-   }
-
-   pre .keyword {
-     color: #900;
-     font-weight: bold
-   }
-
-   pre .identifier {
-     color: rgb(0, 0, 0);
-   }
-
-   pre .string {
-     color: #d14;
-   }
-</style>
-
-<!-- R syntax highlighter -->
-<script type="text/javascript">
-var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
-hljs.initHighlightingOnLoad();
+})();
 </script>
 
 
 
-<style type="text/css">
-body, td {
-   font-family: sans-serif;
-   background-color: white;
-   font-size: 13px;
-}
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
 
-body {
-  max-width: 800px;
-  margin: auto;
-  padding: 1em;
-  line-height: 20px;
-}
-
-tt, code, pre {
-   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
-}
-
-h1 {
-   font-size:2.2em;
-}
-
-h2 {
-   font-size:1.8em;
-}
-
-h3 {
-   font-size:1.4em;
-}
-
-h4 {
-   font-size:1.0em;
-}
-
-h5 {
-   font-size:0.9em;
-}
-
-h6 {
-   font-size:0.8em;
-}
-
-a:visited {
-   color: rgb(50%, 0%, 50%);
-}
-
-pre, img {
-  max-width: 100%;
-}
-pre {
-  overflow-x: auto;
-}
-pre code {
-   display: block; padding: 0.5em;
-}
-
-code {
-  font-size: 92%;
-  border: 1px solid #ccc;
-}
-
-code[class] {
-  background-color: #F8F8F8;
-}
-
-table, td, th {
-  border: none;
-}
-
-blockquote {
-   color:#666666;
-   margin:0;
-   padding-left: 1em;
-   border-left: 0.5em #EEE solid;
-}
-
-hr {
-   height: 0px;
-   border-bottom: none;
-   border-top-width: thin;
-   border-top-style: dotted;
-   border-top-color: #999999;
-}
-
-@media print {
-   * {
-      background: transparent !important;
-      color: black !important;
-      filter:none !important;
-      -ms-filter: none !important;
-   }
-
-   body {
-      font-size:12pt;
-      max-width:100%;
-   }
-
-   a, a:visited {
-      text-decoration: underline;
-   }
-
-   hr {
-      visibility: hidden;
-      page-break-before: always;
-   }
-
-   pre, blockquote {
-      padding-right: 1em;
-      page-break-inside: avoid;
-   }
-
-   tr, img {
-      page-break-inside: avoid;
-   }
-
-   img {
-      max-width: 100% !important;
-   }
-
-   @page :left {
-      margin: 15mm 20mm 15mm 10mm;
-   }
-
-   @page :right {
-      margin: 15mm 10mm 15mm 20mm;
-   }
-
-   p, h2, h3 {
-      orphans: 3; widows: 3;
-   }
-
-   h2, h3 {
-      page-break-after: avoid;
-   }
-}
-</style>
 
 
 
 </head>
 
 <body>
+
+
+
+
+<h1 class="title toc-ignore">RSuite basic workflow</h1>
+<h4 class="author">WLOG Solutions</h4>
+<h4 class="date">2019-06-10</h4>
+
+
+
+<div id="basic-r-suite-usage" class="section level1">
 <h1>Basic R Suite usage</h1>
-
 <p>In this document we present a basic R Suite usage. It covers:</p>
-
 <ul>
 <li>creating project</li>
 <li>adding custom packages</li>
@@ -214,72 +111,53 @@ hr {
 <li>understanding loggers</li>
 <li>project environment locking</li>
 </ul>
-
+<div id="got-stuck" class="section level2">
 <h2><strong>Got stuck?</strong></h2>
-
 <p>If you are stuck feel free to contact us:</p>
-
 <ul>
-<li>through the R Suite website (<a href="https://rsuite.io#contact">https://rsuite.io#contact</a>) or </li>
+<li>through the R Suite website (<a href="https://rsuite.io#contact" class="uri">https://rsuite.io#contact</a>) or</li>
 <li>using Gitter <a href="https://gitter.im/WLOGSolutions/RSuite" title="Gitter R Suite room">R Suite room</a></li>
-<li>directly by sending an email with the description of your problem to
-<a href="mailto:rsuite@wlogsolutions.com">rsuite@wlogsolutions.com</a>.</li>
+<li>directly by sending an email with the description of your problem to <a href="mailto:rsuite@wlogsolutions.com">rsuite@wlogsolutions.com</a>.</li>
 </ul>
-
+</div>
+<div id="package-options" class="section level2">
 <h2>Package options</h2>
-
 <p>RSuite uses the following options to configure behavior:</p>
-
 <ul>
 <li>rsuite.user_templ_path: path to folder containing user customized templates</li>
-<li>rsuite.cache_path: path to RSuite&#39;s cache folder to store downloaded packages for
-later usage and content index of used repositories.<br/></li>
+<li>rsuite.cache_path: path to RSuite’s cache folder to store downloaded packages for later usage and content index of used repositories.</li>
 </ul>
-
+</div>
+<div id="start-a-new-project" class="section level2">
 <h2>Start a new project</h2>
-
 <p>To create a new project (called <code>my_project</code>) we have to call the following function:</p>
-
-<pre><code class="r">RSuite::prj_start(name = &#39;my_project&#39;)
-#&gt;  2019-03-07 09:07:09 INFO:rsuite:Project my_project has structure compliant with current version of RSuite(v0.36.252).
-#&gt;  2019-03-07 09:07:09 INFO:rsuite:Project my_project started.
-#&gt;  2019-03-07 09:07:09 INFO:rsuite:Local GIT repository created for the project
-#&gt;  2019-03-07 09:07:09 INFO:rsuite:Puting project my_project under GIT control ...
-#&gt;  2019-03-07 09:07:10 INFO:rsuite:... done
-</code></pre>
-
-<p>The RSuite project is being created in folder not under git/svn control. This is the cause of warning you can see
-above.
-To avoid that warning messages you can pass the <code>TRUE</code> for <code>skip_rc</code> argument.</p>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_start</span>(<span class="dt">name =</span> <span class="st">'my_project'</span>)
+<span class="co">#&gt;  2019-06-10 10:29:55 INFO:rsuite:Project my_project has structure compliant with current version of RSuite(v0.37.253).</span>
+<span class="co">#&gt;  2019-06-10 10:29:55 INFO:rsuite:Project my_project started.</span>
+<span class="co">#&gt;  2019-06-10 10:29:55 INFO:rsuite:Local GIT repository created for the project</span>
+<span class="co">#&gt;  2019-06-10 10:29:55 INFO:rsuite:Puting project my_project under GIT control ...</span>
+<span class="co">#&gt;  2019-06-10 10:29:55 INFO:rsuite:... done</span></code></pre></div>
+<p>The RSuite project is being created in folder not under git/svn control. This is the cause of warning you can see above. To avoid that warning messages you can pass the <code>TRUE</code> for <code>skip_rc</code> argument.</p>
+<div id="run-master-file" class="section level3">
 <h3>Run master file</h3>
-
 <p>Every project has a special structure. Lets change working directory to the project we just created to check it.</p>
-
-<pre><code>setwd(&quot;my_project&quot;)
-</code></pre>
-
+<pre><code>setwd(&quot;my_project&quot;)</code></pre>
 <p>Lets see the contents of the project folder created:</p>
-
-<pre><code class="r">cat(list.files(&quot;.&quot;, all.files = TRUE), sep = &quot;\n&quot;)
-#&gt;  .
-#&gt;  ..
-#&gt;  .git
-#&gt;  .gitignore
-#&gt;  .Rprofile
-#&gt;  config_templ.txt
-#&gt;  deployment
-#&gt;  logs
-#&gt;  my_project.Rproj
-#&gt;  packages
-#&gt;  PARAMETERS
-#&gt;  R
-#&gt;  tests
-</code></pre>
-
-<p>In folder <code>R</code> there are master scripts - these are execution scripts in our project. R Suite by default creates exemplary
-script <code>R\master.R</code> of following contents:</p>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cat</span>(<span class="kw">list.files</span>(<span class="st">&quot;.&quot;</span>, <span class="dt">all.files =</span> <span class="ot">TRUE</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)
+<span class="co">#&gt;  .</span>
+<span class="co">#&gt;  ..</span>
+<span class="co">#&gt;  .git</span>
+<span class="co">#&gt;  .gitignore</span>
+<span class="co">#&gt;  .Rprofile</span>
+<span class="co">#&gt;  config_templ.txt</span>
+<span class="co">#&gt;  deployment</span>
+<span class="co">#&gt;  logs</span>
+<span class="co">#&gt;  my_project.Rproj</span>
+<span class="co">#&gt;  packages</span>
+<span class="co">#&gt;  PARAMETERS</span>
+<span class="co">#&gt;  R</span>
+<span class="co">#&gt;  tests</span></code></pre></div>
+<p>In folder <code>R</code> there are master scripts - these are execution scripts in our project. R Suite by default creates exemplary script <code>R\master.R</code> of following contents:</p>
 <pre><code># Detect proper script_path (you cannot use args yet as they are build with tools in set_env.r)
 script_path &lt;- (function() {
   args &lt;- commandArgs(trailingOnly = FALSE)
@@ -288,7 +166,7 @@ script_path &lt;- (function() {
     return(&quot;R&quot;)
   }
   if (grepl(&quot;darwin&quot;, R.version$os)) {
-    base &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, base) # on MacOS ~+~ in path denotes whitespace
+    script_path &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, script_path) # on MacOS ~+~ in path denotes whitespace
   }
   return(normalizePath(script_path))
 })()
@@ -297,31 +175,23 @@ script_path &lt;- (function() {
 source(file.path(script_path, &quot;set_env.R&quot;), chdir = T)
 
 config &lt;- load_config()
-args &lt;- args_parser()
-</code></pre>
-
+args &lt;- args_parser()</code></pre>
 <p>To check if everything is working properly run the <code>R/master.R</code> script:</p>
-
-<pre><code class="r">source(&quot;R/master.R&quot;)
-#&gt;  Ładowanie wymaganego pakietu: methods
-print(&quot;master.R sourced successfully.&quot;)
-#&gt;  [1] &quot;master.R sourced successfully.&quot;
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;R/master.R&quot;</span>)
+<span class="kw">print</span>(<span class="st">&quot;master.R sourced successfully.&quot;</span>)
+<span class="co">#&gt;  [1] &quot;master.R sourced successfully.&quot;</span></code></pre></div>
 <p>You should not see any error messages.</p>
-
+</div>
+</div>
+<div id="add-first-package" class="section level2">
 <h2>Add first package</h2>
-
 <p>R Suite forces the users to keep logic in packages. To create a package (called <code>mypackage</code>) call the following function:</p>
-
-<pre><code class="r">RSuite::prj_start_package(name = &quot;mypackage&quot;, skip_rc = TRUE)
-#&gt;  2019-03-07 09:07:10 INFO:rsuite:Package mypackage started in project my_project.
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_start_package</span>(<span class="dt">name =</span> <span class="st">&quot;mypackage&quot;</span>, <span class="dt">skip_rc =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt;  2019-06-10 10:29:56 INFO:rsuite:Package mypackage started in project my_project.</span></code></pre></div>
+</div>
+<div id="add-custom-package-to-master-script" class="section level2">
 <h2>Add custom package to master script</h2>
-
 <p>Open in any editor <code>R/master.R</code> and change it to look like this:</p>
-
 <pre><code># Detect proper script_path (you cannot use args yet as they are build with tools in set_env.r)
 script_path &lt;- (function() {
   args &lt;- commandArgs(trailingOnly = FALSE)
@@ -330,7 +200,7 @@ script_path &lt;- (function() {
     return(&quot;R&quot;)
   }
   if (grepl(&quot;darwin&quot;, R.version$os)) {
-    base &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, base) # on MacOS ~+~ in path denotes whitespace
+    script_path &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, script_path) # on MacOS ~+~ in path denotes whitespace
   }
   return(normalizePath(script_path))
 })()
@@ -341,49 +211,36 @@ source(file.path(script_path, &quot;set_env.R&quot;), chdir = T)
 config &lt;- load_config()
 args &lt;- args_parser()
 
-library(mypackage)
-</code></pre>
-
+library(mypackage)</code></pre>
 <p>You can check if your package is visible to your master script by running the master script</p>
-
-<pre><code class="r">source(&#39;R/master.R&#39;)
-#&gt;  Error in library(mypackage): nie ma pakietu o nazwie &#39;mypackage&#39;
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">'R/master.R'</span>)
+<span class="co">#&gt;  Error in library(mypackage): nie ma pakietu o nazwie 'mypackage'</span></code></pre></div>
 <p>You can notice an error saying there is no such package as <code>mypackage</code>. This is fine because in R you have to install package to have access to it.</p>
-
+</div>
+<div id="building-custom-packages" class="section level2">
 <h2>Building custom packages</h2>
-
 <p>Adding a package to the project is not enough to use it. You have to build it. You can do this by calling the following function:</p>
-
-<pre><code class="r">RSuite::prj_build()
-#&gt;  2019-03-07 09:07:10 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2019-03-07 09:07:17 INFO:rsuite:Successfuly installed 1 packages
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_build</span>()
+<span class="co">#&gt;  2019-06-10 10:29:56 INFO:rsuite:Installing mypackage (for R 3.5) ...</span>
+<span class="co">#&gt;  2019-06-10 10:29:56 </span><span class="al">WARNING</span><span class="co">:rsuite:Document building for mypackage failed: Error in loadNamespace(name): nie ma pakietu o nazwie 'devtools'</span>
+<span class="co">#&gt;  2019-06-10 10:29:56 ERROR:rsuite:Failed to install project packages: mypackage</span>
+<span class="co">#&gt;  Error: Failed to install project packages: mypackage</span></code></pre></div>
 <p>Now you can check if your master script has access to the package <code>mypackage</code></p>
-
-<pre><code class="r">source(&#39;R/master.R&#39;)
-print(&quot;master.R sourced successfully and loaded mypackage.&quot;)
-#&gt;  [1] &quot;master.R sourced successfully and loaded mypackage.&quot;
-</code></pre>
-
-<p>If everything worked properly you shouldn&#39;t see any error messages.</p>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">'R/master.R'</span>)
+<span class="co">#&gt;  Error in library(mypackage): nie ma pakietu o nazwie 'mypackage'</span>
+<span class="kw">print</span>(<span class="st">&quot;master.R sourced successfully and loaded mypackage.&quot;</span>)
+<span class="co">#&gt;  [1] &quot;master.R sourced successfully and loaded mypackage.&quot;</span></code></pre></div>
+<p>If everything worked properly you shouldn’t see any error messages.</p>
+</div>
+<div id="adding-function-to-a-custom-package" class="section level2">
 <h2>Adding function to a custom package</h2>
-
 <p>Lets add a function <code>hello_world</code> to our package <code>mypackage</code>. To do this you have to create a new file in folder <code>packages/mypackage/R/hello_world.R</code>. Edit hello_world.R to have the following content:</p>
-
-<pre><code>#&#39; @export
+<pre><code>#' @export
 hello_world &lt;- function(name) {
     sprintf(&quot;Hello %s!&quot;, name)
-}
-</code></pre>
-
-<p>Please remember to add <code>#&#39; @export</code>. It is required to expose the function into global namespace.</p>
-
+}</code></pre>
+<p>Please remember to add <code>#' @export</code>. It is required to expose the function into global namespace.</p>
 <p>Now you can change master script by adding one line to it:</p>
-
 <pre><code># Detect proper script_path (you cannot use args yet as they are build with tools in set_env.r)
 script_path &lt;- (function() {
   args &lt;- commandArgs(trailingOnly = FALSE)
@@ -392,7 +249,7 @@ script_path &lt;- (function() {
     return(&quot;R&quot;)
   }
   if (grepl(&quot;darwin&quot;, R.version$os)) {
-    base &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, base) # on MacOS ~+~ in path denotes whitespace
+    script_path &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, script_path) # on MacOS ~+~ in path denotes whitespace
   }
   return(normalizePath(script_path))
 })()
@@ -405,133 +262,94 @@ args &lt;- args_parser()
 
 library(mypackage)
 
-hello_world(&quot;John&quot;)
-</code></pre>
-
+hello_world(&quot;John&quot;)</code></pre>
 <p>In order to check if everything works, run the master script:</p>
-
-<pre><code class="r">source(&#39;R/master.R&#39;)
-#&gt;  Error in eval(expr, envir, enclos): nie udało się znaleźć funkcji &#39;hello_world&#39;
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">'R/master.R'</span>)
+<span class="co">#&gt;  Error in library(mypackage): nie ma pakietu o nazwie 'mypackage'</span></code></pre></div>
 <p>As you can see you got an error message that there is no such function as <code>hello_world</code></p>
-
+</div>
+<div id="rebuild-custom-package" class="section level2">
 <h2>Rebuild custom package</h2>
-
 <p>You have to rebuild packages to have all the functionality available to master scripts. You do it with the following function call.</p>
-
-<pre><code class="r">RSuite::prj_build()
-#&gt;  2019-03-07 09:07:17 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2019-03-07 09:07:24 INFO:rsuite:Successfuly installed 1 packages
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_build</span>()
+<span class="co">#&gt;  2019-06-10 10:29:57 INFO:rsuite:Installing mypackage (for R 3.5) ...</span>
+<span class="co">#&gt;  2019-06-10 10:29:57 </span><span class="al">WARNING</span><span class="co">:rsuite:Document building for mypackage failed: Error in loadNamespace(name): nie ma pakietu o nazwie 'devtools'</span>
+<span class="co">#&gt;  2019-06-10 10:29:57 ERROR:rsuite:Failed to install project packages: mypackage</span>
+<span class="co">#&gt;  Error: Failed to install project packages: mypackage</span></code></pre></div>
 <p>And check if <code>R/master.R</code> works:</p>
-
-<pre><code class="r">source(&#39;R/master.R&#39;, print.eval = TRUE)
-#&gt;  [1] &quot;Hello John!&quot;
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">'R/master.R'</span>, <span class="dt">print.eval =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt;  Error in library(mypackage): nie ma pakietu o nazwie 'mypackage'</span></code></pre></div>
+</div>
+<div id="adding-dependencies" class="section level2">
 <h2>Adding dependencies</h2>
-
 <p>You can add dependencies to external packages in two ways:</p>
-
-<ol>
+<ol style="list-style-type: decimal">
 <li><strong>Recommended</strong> - using <em>imports</em> in <code>DESCRIPTION</code> file in each package</li>
 <li><strong>Not recommended</strong> - using <code>library</code> or <code>require</code> in master scripts</li>
 </ol>
-
 <p>To add a dependency to an external package we will edit file <code>packages\mypackage\DESCRIPTION</code> like below:</p>
-
 <pre><code>Package: mypackage
 Type: Package
 Title: What the package does (short line)
 Version: 0.1
-Date: 2019-03-07
+Date: 2019-06-10
 Author: ws171913
 Maintainer: Who to complain to &lt;yourfault@somewhere.net&gt;
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Imports: logging
-RoxygenNote: 6.1.1
-Depends: data.table (&gt;= 1.10.1)
-</code></pre>
-
+Depends: data.table (&gt;= 1.10.1)</code></pre>
 <p>I have added <code>data.table (&gt;= 1.10.1)</code> to the Depends section. This means I declared that mypackage depends on data.table package in version 1.10.1 or newer.</p>
-
 <p>Lets rebuild package to have master scripts see the changes:</p>
-
-<pre><code class="r">RSuite::prj_build()
-#&gt;  2019-03-07 09:07:24 ERROR:rsuite:Some dependencies are not installed in project env: data.table.Please, install dependencies(Call RSuite::prj_install_deps)
-#&gt;  Error: Some dependencies are not installed in project env: data.table.Please, install dependencies(Call RSuite::prj_install_deps)
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_build</span>()
+<span class="co">#&gt;  2019-06-10 10:29:57 ERROR:rsuite:Some dependencies are not installed in project env: data.table.Please, install dependencies(Call RSuite::prj_install_deps)</span>
+<span class="co">#&gt;  Error: Some dependencies are not installed in project env: data.table.Please, install dependencies(Call RSuite::prj_install_deps)</span></code></pre></div>
 <p>You can conclude that you have to install dependencies to build your package.</p>
-
+</div>
+<div id="install-dependencies" class="section level2">
 <h2>Install dependencies</h2>
-
 <p>To install dependencies you have to call the following function:</p>
-
-<pre><code class="r">RSuite::prj_install_deps()
-#&gt;  2019-03-07 09:07:24 INFO:rsuite:Detecting repositories (for R 3.3)...
-#&gt;  2019-03-07 09:07:28 INFO:rsuite:Will look for dependencies in ...
-#&gt;  2019-03-07 09:07:28 INFO:rsuite:.          MRAN#1 = https://mran.microsoft.com/snapshot/2019-03-07 (win.binary, source)
-#&gt;  2019-03-07 09:07:28 INFO:rsuite:Collecting project dependencies (for R 3.3)...
-#&gt;  2019-03-07 09:07:28 INFO:rsuite:Resolving dependencies (for R 3.3)...
-#&gt;  2019-03-07 09:07:29 INFO:rsuite:Following installed packages will be updated: mypackage
-#&gt;  2019-03-07 09:07:29 INFO:rsuite:Detected 1 dependencies to install. Installing...
-#&gt;  2019-03-07 09:07:33 INFO:rsuite:All dependencies successfully installed.
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_install_deps</span>()
+<span class="co">#&gt;  2019-06-10 10:29:57 INFO:rsuite:Detecting repositories (for R 3.5)...</span>
+<span class="co">#&gt;  2019-06-10 10:30:00 INFO:rsuite:Will look for dependencies in ...</span>
+<span class="co">#&gt;  2019-06-10 10:30:00 INFO:rsuite:.          MRAN#1 = https://mran.microsoft.com/snapshot/2019-06-10 (win.binary, source)</span>
+<span class="co">#&gt;  2019-06-10 10:30:00 INFO:rsuite:Collecting project dependencies (for R 3.5)...</span>
+<span class="co">#&gt;  2019-06-10 10:30:00 INFO:rsuite:Resolving dependencies (for R 3.5)...</span>
+<span class="co">#&gt;  2019-06-10 10:30:01 INFO:rsuite:Detected 1 dependencies to install. Installing...</span>
+<span class="co">#&gt;  2019-06-10 10:30:05 INFO:rsuite:All dependencies successfully installed.</span>
+<span class="co">#&gt;  2019-06-10 10:30:24 INFO:rsuite:Detected 49 support packages to install. Installing...</span>
+<span class="co">#&gt;  2019-06-10 10:31:44 INFO:rsuite:All support packages successfully installed.</span></code></pre></div>
 <p>From this output you can see that we use <code>MRAN</code> as our package repository. Moreover R Suite detected 1 dependency to be installed.</p>
-
 <p>You can check if installation succeeded by calling the following function:</p>
-
-<pre><code class="r">RSuite::prj_build()
-#&gt;  2019-03-07 09:07:35 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2019-03-07 09:07:42 INFO:rsuite:Successfuly installed 1 packages
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_build</span>()
+<span class="co">#&gt;  2019-06-10 10:31:44 INFO:rsuite:Installing mypackage (for R 3.5) ...</span>
+<span class="co">#&gt;  2019-06-10 10:31:52 INFO:rsuite:Successfuly installed 1 packages</span></code></pre></div>
 <p>Lets check what happens if you run our master script</p>
-
-<pre><code class="r">source(&#39;R/master.R&#39;, print.eval = TRUE)
-#&gt;  Ładowanie wymaganego pakietu: data.table
-#&gt;  [1] &quot;Hello John!&quot;
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">'R/master.R'</span>, <span class="dt">print.eval =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt;  Ładowanie wymaganego pakietu: data.table</span>
+<span class="co">#&gt;  [1] &quot;Hello John!&quot;</span></code></pre></div>
 <p>The output says that <code>data.table</code> was loaded. This is exactly what we wanted to be.</p>
-
+</div>
+<div id="developing-custom-package-using-devtools" class="section level2">
 <h2>Developing custom package using <code>devtools</code></h2>
-
 <p>If you want to develop a package the cycle dev-build can take too long. This is especially important if the packages are bigger. You can use devtools to speedup this process. Lets go through such process.</p>
-
 <p>Lets perform change in our <code>mypackage</code> in <code>packages/mypackage/R/hello_world.R</code> file to look it like this:</p>
-
-<pre><code>#&#39; @export
+<pre><code>#' @export
 hello_world &lt;- function(name) {
     sprintf(&quot;Hello %s! Good to see you again.&quot;, name)
-}
-</code></pre>
-
+}</code></pre>
 <p>Now we can load the changed package for testing without rebuilding it with following command:</p>
-
-<pre><code class="r">devtools::load_all(&quot;packages/mypackage&quot;)
-#&gt;  Loading mypackage
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">load_all</span>(<span class="st">&quot;packages/mypackage&quot;</span>)
+<span class="co">#&gt;  Loading mypackage</span></code></pre></div>
 <p>Lets see how <code>hello_world</code> function behaves now:</p>
-
-<pre><code class="r">hello_world(&quot;John&quot;)
-#&gt;  [1] &quot;Hello John! Good to see you again.&quot;
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hello_world</span>(<span class="st">&quot;John&quot;</span>)
+<span class="co">#&gt;  [1] &quot;Hello John! Good to see you again.&quot;</span></code></pre></div>
 <p>As you can see that no package rebuild was required and changed package is reloaded.</p>
-
+</div>
+<div id="loggers-in-master-scripts" class="section level2">
 <h2>Loggers in master scripts</h2>
-
 <p>R Suite promotes good programming practices and using loggers is one of them. R Suite is based on <code>logging</code> package.</p>
-
 <p>Lets update <code>R/master.R</code> as follows</p>
-
 <pre><code># Detect proper script_path (you cannot use args yet as they are build with tools in set_env.r)
 script_path &lt;- (function() {
   args &lt;- commandArgs(trailingOnly = FALSE)
@@ -540,7 +358,7 @@ script_path &lt;- (function() {
     return(&quot;R&quot;)
   }
   if (grepl(&quot;darwin&quot;, R.version$os)) {
-    base &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, base) # on MacOS ~+~ in path denotes whitespace
+    script_path &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, script_path) # on MacOS ~+~ in path denotes whitespace
   }
   return(normalizePath(script_path))
 })()
@@ -555,62 +373,44 @@ source(file.path(script_path, &quot;set_env.R&quot;), chdir = T)
 loginfo(&quot;Master info&quot;)
 logdebug(&quot;Master debug&quot;)
 logwarn(&quot;Master warning&quot;)
-logerror(&quot;Master error&quot;)
-</code></pre>
-
+logerror(&quot;Master error&quot;)</code></pre>
 <p>Lets check how it works</p>
-
-<pre><code class="r">source(&#39;R/master.R&#39;)
-#&gt;  2019-03-07 09:07:42 INFO::Master info
-#&gt;  2019-03-07 09:07:42 WARNING::Master warning
-#&gt;  2019-03-07 09:07:42 ERROR::Master error
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">'R/master.R'</span>)
+<span class="co">#&gt;  2019-06-10 10:31:53 INFO::Master info</span>
+<span class="co">#&gt;  2019-06-10 10:31:53 </span><span class="al">WARNING</span><span class="co">::Master warning</span>
+<span class="co">#&gt;  2019-06-10 10:31:53 ERROR::Master error</span></code></pre></div>
 <p>As you can see there are logging messages. You can see that debug message is missing as by default logging level is set to present only messages on <code>INFO</code> and higher levels.</p>
-
+<div id="controlling-loggers-level" class="section level3">
 <h3>Controlling loggers level</h3>
-
 <p>To see debug logging message change project configuration file. Project configuration is in <code>config.txt</code> file in project root folder. Please change the file to look like this:</p>
-
-<pre><code>LogLevel: DEBUG
-</code></pre>
-
+<pre><code>LogLevel: DEBUG</code></pre>
 <p>Lets check how it works</p>
-
-<pre><code class="r">source(&#39;R/master.R&#39;)
-#&gt;  2019-03-07 09:07:43 INFO::Master info
-#&gt;  2019-03-07 09:07:43 WARNING::Master warning
-#&gt;  2019-03-07 09:07:43 ERROR::Master error
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">'R/master.R'</span>)
+<span class="co">#&gt;  2019-06-10 10:31:53 INFO::Master info</span>
+<span class="co">#&gt;  2019-06-10 10:31:53 </span><span class="al">WARNING</span><span class="co">::Master warning</span>
+<span class="co">#&gt;  2019-06-10 10:31:53 ERROR::Master error</span></code></pre></div>
 <p>As you can see now debug logging message is printed.</p>
-
+</div>
+<div id="logs-folder" class="section level3">
 <h3><code>Logs</code> folder</h3>
-
 <p>Logging messages are stored in logs folder in files named with current date. You can check this by issuing a command</p>
-
-<pre><code class="r">list.files(path = &quot;./logs&quot;)
-#&gt;  [1] &quot;2019_03_07.log&quot;
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;./logs&quot;</span>)
+<span class="co">#&gt;  [1] &quot;2019_06_10.log&quot;</span></code></pre></div>
 <p>When you open this log in an editor you should see content similar to this</p>
-
-<pre><code>#&gt;  2019-03-07 09:07:42 INFO:rsuite:Successfuly installed 1 packages
-#&gt;  2019-03-07 09:07:42 INFO::Master info
-#&gt;  2019-03-07 09:07:42 WARNING::Master warning
-#&gt;  2019-03-07 09:07:42 ERROR::Master error
-#&gt;  2019-03-07 09:07:43 INFO::Master info
-#&gt;  2019-03-07 09:07:43 WARNING::Master warning
-#&gt;  2019-03-07 09:07:43 ERROR::Master error
-</code></pre>
-
+<pre><code>#&gt;  2019-06-10 10:31:52 INFO:rsuite:Successfuly installed 1 packages
+#&gt;  2019-06-10 10:31:53 INFO::Master info
+#&gt;  2019-06-10 10:31:53 WARNING::Master warning
+#&gt;  2019-06-10 10:31:53 ERROR::Master error
+#&gt;  2019-06-10 10:31:53 INFO::Master info
+#&gt;  2019-06-10 10:31:53 WARNING::Master warning
+#&gt;  2019-06-10 10:31:53 ERROR::Master error</code></pre>
 <p>As you can see this is very similar to the output you saw in console.</p>
-
+</div>
+</div>
+<div id="loggers-in-packages" class="section level2">
 <h2>Loggers in packages</h2>
-
 <p>R Suite allows you to use loggers in your custom packages. Lets open <code>packages/mypackage/R/hello_world.R</code> and change its content to the following one</p>
-
-<pre><code>#&#39; @export
+<pre><code>#' @export
 hello_world &lt;- function(name) {
   pkg_loginfo(&quot;Package info&quot;)
   pkg_logdebug(&quot;Package debug&quot;)
@@ -618,64 +418,44 @@ hello_world &lt;- function(name) {
   pkg_logerror(&quot;Package error&quot;)
 
   sprintf(&quot;Hello %s! Good to see you again.&quot;, name)
-}
-</code></pre>
-
+}</code></pre>
 <p>Lets load changed package with devtools and see how <code>hello_world</code> function behaves:</p>
-
-<pre><code class="r">devtools::load_all(&quot;packages/mypackage&quot;)
-#&gt;  Loading mypackage
-hello_world(&quot;John&quot;)
-#&gt;  2019-03-07 09:07:43 INFO:mypackage:Package info
-#&gt;  2019-03-07 09:07:43 WARNING:mypackage:Package warning
-#&gt;  2019-03-07 09:07:43 ERROR:mypackage:Package error
-#&gt;  [1] &quot;Hello John! Good to see you again.&quot;
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">load_all</span>(<span class="st">&quot;packages/mypackage&quot;</span>)
+<span class="co">#&gt;  Loading mypackage</span>
+<span class="kw">hello_world</span>(<span class="st">&quot;John&quot;</span>)
+<span class="co">#&gt;  2019-06-10 10:31:54 INFO:mypackage:Package info</span>
+<span class="co">#&gt;  2019-06-10 10:31:54 </span><span class="al">WARNING</span><span class="co">:mypackage:Package warning</span>
+<span class="co">#&gt;  2019-06-10 10:31:54 ERROR:mypackage:Package error</span>
+<span class="co">#&gt;  [1] &quot;Hello John! Good to see you again.&quot;</span></code></pre></div>
 <p>As you can see there are messages from your package. They are marked with package name <code>mypackage</code>. Please also note that as you used <code>devtools</code> you did not have to rebuild package to see the changes.</p>
-
 <p>Lets restore log level to default value:</p>
-
-<pre><code class="r">logging::setLevel(&#39;INFO&#39;)
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">logging<span class="op">::</span><span class="kw">setLevel</span>(<span class="st">'INFO'</span>)</code></pre></div>
+</div>
+<div id="project-environment-locking" class="section level2">
 <h2>Project environment locking</h2>
-
-<p>RSuite allows the user to lock the project environment. It collects all dependencies&#39; versions and stores them in a lock file to enforce exact dependency versions in the future. To lock the project environment we have to call the following function:</p>
-
-<pre><code class="r">RSuite::prj_lock_env()
-#&gt;  2019-03-07 09:07:43 INFO:rsuite:The project environment was locked successfully
-</code></pre>
-
-<p>The lock file is in the &#39;deployment&#39; directory under the &#39;env.lock&#39; name. It is a dcf file that stores information about packages in the local environment together with their versions. A sample record from the &#39;env.lock&#39; file is presented below:</p>
-
-<pre><code class="r">cat(readLines(&quot;deployment/env.lock&quot;), sep = &quot;\n&quot;)
-#&gt;  Package: data.table
-#&gt;  Version: 1.10.4-3
-#&gt;  
-#&gt;  Package: logging
-#&gt;  Version: 0.7-103
-#&gt;  
-#&gt;  Package: mypackage
-#&gt;  Version: 0.1
-</code></pre>
-
-<p>When dependencies are being installed using <code>RSuite::prj_install_deps()</code> the &#39;env.lock&#39; file will be used to detect whether any package will change versions. If that&#39;s the case an appropriate warning message will be displayed. The feature allows to safely deploy packages with specific dependencies&#39; versions. It prevent errors caused by newer versions of packages which might work differently than previous ones used in the project. </p>
-
+<p>RSuite allows the user to lock the project environment. It collects all dependencies’ versions and stores them in a lock file to enforce exact dependency versions in the future. To lock the project environment we have to call the following function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_lock_env</span>()
+<span class="co">#&gt;  2019-06-10 10:31:54 INFO:rsuite:The project environment was locked successfully</span></code></pre></div>
+<p>The lock file is in the ‘deployment’ directory under the ‘env.lock’ name. It is a dcf file that stores information about packages in the local environment together with their versions. A sample record from the ‘env.lock’ file is presented below:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cat</span>(<span class="kw">readLines</span>(<span class="st">&quot;deployment/env.lock&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)
+<span class="co">#&gt;  Package: data.table</span>
+<span class="co">#&gt;  Version: 1.12.2</span>
+<span class="co">#&gt;  </span>
+<span class="co">#&gt;  Package: logging</span>
+<span class="co">#&gt;  Version: 0.9-107</span>
+<span class="co">#&gt;  </span>
+<span class="co">#&gt;  Package: mypackage</span>
+<span class="co">#&gt;  Version: 0.1</span></code></pre></div>
+<p>When dependencies are being installed using <code>RSuite::prj_install_deps()</code> the ‘env.lock’ file will be used to detect whether any package will change versions. If that’s the case an appropriate warning message will be displayed. The feature allows to safely deploy packages with specific dependencies’ versions. It prevent errors caused by newer versions of packages which might work differently than previous ones used in the project.</p>
 <p>To safely unlock the local project environment we use the following function:</p>
-
-<pre><code class="r">RSuite::prj_unlock_env()
-#&gt;  2019-03-07 09:07:43 INFO:rsuite:The project environment has been unlocked.
-</code></pre>
-
-<p>The function deletes an existing &#39;env.lock&#39; file.</p>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_unlock_env</span>()
+<span class="co">#&gt;  2019-06-10 10:31:54 INFO:rsuite:The project environment has been unlocked.</span></code></pre></div>
+<p>The function deletes an existing ‘env.lock’ file.</p>
+</div>
+<div id="prepare-deployment-package" class="section level2">
 <h2>Prepare deployment package</h2>
-
 <p>We can now prepare a deployment package to ship our project on a production.</p>
-
 <p>First lets restore <code>R/master.R</code> contents:</p>
-
 <pre><code># Detect proper script_path (you cannot use args yet as they are build with tools in set_env.r)
 script_path &lt;- (function() {
   args &lt;- commandArgs(trailingOnly = FALSE)
@@ -684,7 +464,7 @@ script_path &lt;- (function() {
     return(&quot;R&quot;)
   }
   if (grepl(&quot;darwin&quot;, R.version$os)) {
-    base &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, base) # on MacOS ~+~ in path denotes whitespace
+    script_path &lt;- gsub(&quot;~\\+~&quot;, &quot; &quot;, script_path) # on MacOS ~+~ in path denotes whitespace
   }
   return(normalizePath(script_path))
 })()
@@ -694,93 +474,77 @@ source(file.path(script_path, &quot;set_env.R&quot;), chdir = T)
 
 library(mypackage)
 
-hello_world(&quot;John&quot;)
-</code></pre>
-
+hello_world(&quot;John&quot;)</code></pre>
 <p>Now lets check that all project dependencies have been collected:</p>
-
-<pre><code class="r">RSuite::prj_install_deps()
-#&gt;  2019-03-07 09:07:43 INFO:rsuite:Detecting repositories (for R 3.3)...
-#&gt;  2019-03-07 09:07:43 INFO:rsuite:Will look for dependencies in ...
-#&gt;  2019-03-07 09:07:43 INFO:rsuite:.          MRAN#1 = https://mran.microsoft.com/snapshot/2019-03-07 (win.binary, source)
-#&gt;  2019-03-07 09:07:43 INFO:rsuite:Collecting project dependencies (for R 3.3)...
-#&gt;  2019-03-07 09:07:43 INFO:rsuite:Resolving dependencies (for R 3.3)...
-#&gt;  2019-03-07 09:07:44 INFO:rsuite:Following installed packages will be updated: mypackage
-#&gt;  2019-03-07 09:07:44 INFO:rsuite:No dependencies to install.
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_install_deps</span>()
+<span class="co">#&gt;  2019-06-10 10:31:54 INFO:rsuite:Detecting repositories (for R 3.5)...</span>
+<span class="co">#&gt;  2019-06-10 10:31:54 INFO:rsuite:Will look for dependencies in ...</span>
+<span class="co">#&gt;  2019-06-10 10:31:54 INFO:rsuite:.          MRAN#1 = https://mran.microsoft.com/snapshot/2019-06-10 (win.binary, source)</span>
+<span class="co">#&gt;  2019-06-10 10:31:54 INFO:rsuite:Collecting project dependencies (for R 3.5)...</span>
+<span class="co">#&gt;  2019-06-10 10:31:54 INFO:rsuite:Resolving dependencies (for R 3.5)...</span>
+<span class="co">#&gt;  2019-06-10 10:31:55 INFO:rsuite:Following installed packages will be updated: mypackage</span>
+<span class="co">#&gt;  2019-06-10 10:31:55 INFO:rsuite:No dependencies to install.</span></code></pre></div>
 <p>As you did not add any new dependencies R Suite smartly understands it and does not repeat lengthy dependencies installation phase.</p>
-
 <p>Lets rebuild our custom packages:</p>
-
-<pre><code class="r">RSuite::prj_build()
-#&gt;  2019-03-07 09:07:46 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2019-03-07 09:07:53 INFO:rsuite:Successfuly installed 1 packages
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_build</span>()
+<span class="co">#&gt;  2019-06-10 10:31:57 INFO:rsuite:Installing mypackage (for R 3.5) ...</span>
+<span class="co">#&gt;  2019-06-10 10:32:06 INFO:rsuite:Successfuly installed 1 packages</span></code></pre></div>
 <p>To build a deployment package you use the following function (we specify there to put the deployment package with <code>path</code> argument):</p>
-
-<pre><code class="r">RSuite::prj_zip(path = tempdir())
-#&gt;  2019-03-07 09:07:53 WARNING:rsuite:Project environment is not locked!
-#&gt;  2019-03-07 09:07:53 ERROR:rsuite:Failed to find HEAD branch. Is it fresh repository?
-#&gt;  Error: Failed to find HEAD branch. Is it fresh repository?
-</code></pre>
-
-<p>As project is not under version control and contains only one package R Suite chooses default version for the deployment
-package to be the same as package version(0.1). Suffix <code>x</code> means that it is not a real tag. </p>
-
-<p>For projects under version control consistency of project source code with repository state is checked and 
-deployment package is versioned by source code tag (tag under Git or revision number under SVN) without <code>x</code> suffix. </p>
-
-<p>If project inconsistency with repository is detected (like new/uncontrolled files or source code changes) R Suite 
-prevents building deployment package unless you enforce deployment package version explicitly:</p>
-
-<pre><code class="r">RSuite::prj_zip(path = tempdir(), zip_ver = &#39;1.0&#39;)
-#&gt;  2019-03-07 09:07:53 WARNING:rsuite:Project environment is not locked!
-#&gt;  2019-03-07 09:07:53 INFO:rsuite:Installing mypackage (for R 3.3) ...
-#&gt;  2019-03-07 09:08:01 INFO:rsuite:Successfuly installed 1 packages
-#&gt;  2019-03-07 09:08:01 INFO:rsuite:Preparing files for zipping...
-#&gt;  2019-03-07 09:08:01 INFO:rsuite:... done. Creating zip file my_project_1.0x.zip ...
-#&gt;  2019-03-07 09:08:02 INFO:rsuite:Zip file created: C:\Users\ws171913\AppData\Local\Temp\RtmpoxDnY1/my_project_1.0x.zip
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_zip</span>(<span class="dt">path =</span> <span class="kw">tempdir</span>())
+<span class="co">#&gt;  2019-06-10 10:32:06 </span><span class="al">WARNING</span><span class="co">:rsuite:Project environment is not locked!</span>
+<span class="co">#&gt;  2019-06-10 10:32:06 ERROR:rsuite:Failed to find HEAD branch. Is it fresh repository?</span>
+<span class="co">#&gt;  Error: Failed to find HEAD branch. Is it fresh repository?</span></code></pre></div>
+<p>As project is not under version control and contains only one package R Suite chooses default version for the deployment package to be the same as package version(0.1). Suffix <code>x</code> means that it is not a real tag.</p>
+<p>For projects under version control consistency of project source code with repository state is checked and deployment package is versioned by source code tag (tag under Git or revision number under SVN) without <code>x</code> suffix.</p>
+<p>If project inconsistency with repository is detected (like new/uncontrolled files or source code changes) R Suite prevents building deployment package unless you enforce deployment package version explicitly:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RSuite<span class="op">::</span><span class="kw">prj_zip</span>(<span class="dt">path =</span> <span class="kw">tempdir</span>(), <span class="dt">zip_ver =</span> <span class="st">'1.0'</span>)
+<span class="co">#&gt;  2019-06-10 10:32:06 </span><span class="al">WARNING</span><span class="co">:rsuite:Project environment is not locked!</span>
+<span class="co">#&gt;  2019-06-10 10:32:06 INFO:rsuite:Installing mypackage (for R 3.5) ...</span>
+<span class="co">#&gt;  2019-06-10 10:32:14 INFO:rsuite:Successfuly installed 1 packages</span>
+<span class="co">#&gt;  2019-06-10 10:32:14 INFO:rsuite:Preparing files for zipping...</span>
+<span class="co">#&gt;  2019-06-10 10:32:14 INFO:rsuite:... done. Creating zip file my_project_1.0x.zip ...</span>
+<span class="co">#&gt;  2019-06-10 10:32:15 INFO:rsuite:Zip file created: C:\Users\ws171913\AppData\Local\Temp\RtmpslCi8w/my_project_1.0x.zip</span></code></pre></div>
 <p>You have created file <code>my_project_1.0x.zip</code> that contains all information necessary to run your solution on a production environment.</p>
-
+</div>
+<div id="running-deployment-package" class="section level2">
 <h2>Running deployment package</h2>
-
 <p>To test if the deployment package is working you can extract <code>my_project_1.0x.zip</code> created in previous step in a new folder say <code>prod</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dir.create</span>(<span class="dt">path =</span> <span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;prod&quot;</span>), <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>)
+<span class="kw">unzip</span>(<span class="dt">zipfile =</span> <span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;my_project_1.0x.zip&quot;</span>), 
+      <span class="dt">exdir =</span> <span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;prod&quot;</span>))
 
-<pre><code class="r">dir.create(path = file.path(tempdir(), &quot;prod&quot;), showWarnings = FALSE)
-unzip(zipfile = file.path(tempdir(), &quot;my_project_1.0x.zip&quot;), 
-      exdir = file.path(tempdir(), &quot;prod&quot;))
-
-cat(list.files(path = file.path(tempdir(), &quot;prod&quot;, &quot;my_project&quot;)), sep = &quot;\n&quot;)
-#&gt;  config_templ.txt
-#&gt;  libs
-#&gt;  logs
-#&gt;  R
-#&gt;  readme.txt
-</code></pre>
-
+<span class="kw">cat</span>(<span class="kw">list.files</span>(<span class="dt">path =</span> <span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;prod&quot;</span>, <span class="st">&quot;my_project&quot;</span>)), <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)
+<span class="co">#&gt;  config_templ.txt</span>
+<span class="co">#&gt;  libs</span>
+<span class="co">#&gt;  logs</span>
+<span class="co">#&gt;  R</span>
+<span class="co">#&gt;  readme.txt</span></code></pre></div>
 <p><code>readme.txt</code> file contains version number the project has been tagged with:</p>
-
-<pre><code>my_project v1.0x
-</code></pre>
-
+<pre><code>my_project v1.0x</code></pre>
 <p>Now you can run your solution with the command</p>
-
-<pre><code class="r">output &lt;- system2(command = Sys.which(&quot;Rscript&quot;), 
-                  args = file.path(tempdir(), &quot;prod&quot;, &quot;my_project&quot;, &quot;R&quot;, &quot;master.R&quot;),
-                  stdout = TRUE)
-cat(output, sep = &quot;\n&quot;)
-#&gt;  2019-03-07 09:08:03 INFO:mypackage:Package info
-#&gt;  2019-03-07 09:08:03 WARNING:mypackage:Package warning
-#&gt;  2019-03-07 09:08:03 ERROR:mypackage:Package error
-#&gt;  [1] &quot;Hello John! Good to see you again.&quot;
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">output &lt;-<span class="st"> </span><span class="kw">system2</span>(<span class="dt">command =</span> <span class="kw">Sys.which</span>(<span class="st">&quot;Rscript&quot;</span>), 
+                  <span class="dt">args =</span> <span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;prod&quot;</span>, <span class="st">&quot;my_project&quot;</span>, <span class="st">&quot;R&quot;</span>, <span class="st">&quot;master.R&quot;</span>),
+                  <span class="dt">stdout =</span> <span class="ot">TRUE</span>)
+<span class="kw">cat</span>(output, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)
+<span class="co">#&gt;  2019-06-10 10:32:16 INFO:mypackage:Package info</span>
+<span class="co">#&gt;  2019-06-10 10:32:17 </span><span class="al">WARNING</span><span class="co">:mypackage:Package warning</span>
+<span class="co">#&gt;  2019-06-10 10:32:17 ERROR:mypackage:Package error</span>
+<span class="co">#&gt;  [1] &quot;Hello John! Good to see you again.&quot;</span></code></pre></div>
 <p>As you can see the output is exactly the same you would expect.</p>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
-
 </html>

@@ -32,3 +32,4 @@ Other in extending RSuite with RC adapter: \code{\link{rc_adapter_get_version}},
   \code{\link{rc_adapter_prj_struct_add}},
   \code{\link{rc_adapter_remove_admins}}
 }
+\concept{in extending RSuite with RC adapter}

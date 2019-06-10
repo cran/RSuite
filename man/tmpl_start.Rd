@@ -38,3 +38,4 @@ tmpl_start(basename(tmpl_dir), path = tempdir())
 \seealso{
 Other in templates management: \code{\link{tmpl_list_registered}}
 }
+\concept{in templates management}

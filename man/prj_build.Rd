@@ -4,8 +4,8 @@
 \alias{prj_build}
 \title{Builds project internal packages and installs them.}
 \usage{
-prj_build(prj = NULL, type = NULL, rebuild = FALSE, vignettes = TRUE,
-  tag = FALSE)
+prj_build(prj = NULL, type = NULL, rebuild = FALSE,
+  vignettes = TRUE, tag = FALSE)
 }
 \arguments{
 \item{prj}{project to build if not passed will build project for working
@@ -59,3 +59,4 @@ Other in project management: \code{\link{prj_clean_deps}},
   \code{\link{prj_start}}, \code{\link{prj_unload}},
   \code{\link{prj_zip}}
 }
+\concept{in project management}

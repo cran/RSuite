@@ -49,3 +49,4 @@ cat(readLines(file.path(prj$path, "PARAMETERS")), sep = "\\n")
 \seealso{
 Other in project configuration: \code{\link{prj_config_set_rversion}}
 }
+\concept{in project configuration}

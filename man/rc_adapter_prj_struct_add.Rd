@@ -35,3 +35,4 @@ Other in extending RSuite with RC adapter: \code{\link{rc_adapter_create_base}},
   \code{\link{rc_adapter_pkg_struct_add}},
   \code{\link{rc_adapter_remove_admins}}
 }
+\concept{in extending RSuite with RC adapter}

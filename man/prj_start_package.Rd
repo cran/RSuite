@@ -4,7 +4,8 @@
 \alias{prj_start_package}
 \title{Creates package structure inside the project.}
 \usage{
-prj_start_package(name, prj = NULL, skip_rc = FALSE, tmpl = "builtin")
+prj_start_package(name, prj = NULL, skip_rc = FALSE,
+  tmpl = "builtin")
 }
 \arguments{
 \item{name}{name of the package to create. It must not contain special characters
@@ -54,3 +55,4 @@ Other in project management: \code{\link{prj_build}},
   \code{\link{prj_start}}, \code{\link{prj_unload}},
   \code{\link{prj_zip}}
 }
+\concept{in project management}

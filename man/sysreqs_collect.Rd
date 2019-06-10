@@ -44,3 +44,4 @@ Prints out all system requirements from dependencies and project packages.
 Other in SYSREQS: \code{\link{sysreqs_check}},
   \code{\link{sysreqs_install}}
 }
+\concept{in SYSREQS}

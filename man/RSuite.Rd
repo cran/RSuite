@@ -80,6 +80,16 @@ and use it to update an internal CRAN-like repository which has no access to the
 }
 }
 
+\section{Bash installer}{
+
+You can create bash installer script to deploy in optimized (intelligent & parallel) way you
+project.
+
+\describe{
+  \item{\code{inst_wrap_zip}}{Wraps deployment zip into bash installer script.}
+}
+}
+
 \section{RSuite miscellaneous}{
 
 

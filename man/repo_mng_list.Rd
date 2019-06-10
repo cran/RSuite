@@ -4,7 +4,8 @@
 \alias{repo_mng_list}
 \title{Retrieve the list of available packages in the repository.}
 \usage{
-repo_mng_list(repo_manager, pkg_type = .Platform$pkgType, no.cache = FALSE)
+repo_mng_list(repo_manager, pkg_type = .Platform$pkgType,
+  no.cache = FALSE)
 }
 \arguments{
 \item{repo_manager}{repo manager to retrieve package list from.
@@ -60,3 +61,4 @@ Other in repository management: \code{\link{repo_mng_init}},
   \code{\link{repo_upload_pkgzip}},
   \code{\link{repo_upload_prj_packages}}
 }
+\concept{in repository management}

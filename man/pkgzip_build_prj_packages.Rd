@@ -83,3 +83,4 @@ Other in PKGZIP building: \code{\link{pkgzip_build_bioc_package}},
   \code{\link{pkgzip_build_github_package}},
   \code{\link{pkgzip_build_package_files}}
 }
+\concept{in PKGZIP building}

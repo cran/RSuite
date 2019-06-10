@@ -42,3 +42,4 @@ cat(readLines(file.path(prj$path, "PARAMETERS")), sep = "\\n")
 \seealso{
 Other in project configuration: \code{\link{prj_config_set_repo_adapters}}
 }
+\concept{in project configuration}

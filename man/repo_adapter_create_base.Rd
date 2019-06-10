@@ -35,3 +35,4 @@ Other in extending RSuite with Repo adapter: \code{\link{repo_adapter_create_man
   \code{\link{repo_manager_remove}},
   \code{\link{repo_manager_upload}}
 }
+\concept{in extending RSuite with Repo adapter}

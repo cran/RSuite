@@ -30,3 +30,4 @@ Other miscellaneous: \code{\link{rsuite_check_version}},
   \code{\link{rsuite_unregister_repo_adapter}},
   \code{\link{rsuite_update}}, \code{\link{tmpl_register}}
 }
+\concept{miscellaneous}
